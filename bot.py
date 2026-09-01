@@ -7,7 +7,7 @@ TOKEN = "8664121709:AAGZLrm7vwV2uY8n6HKrPOtqsP6olCPJeEc"
 ADMIN_ID = (
     8443620164
 )
-WEBAPP_URL = "لینک_سایت_vercel_شما"  # لینکی که بعد از آپلود index.html در Vercel میگیرید
+WEBAPP_URL ="https://kindamirdeveloper-code.github.io/crypto-app/"
 
 bot = telebot.TeleBot(TOKEN)
 CHANNELS_FILE = "channels.json"
