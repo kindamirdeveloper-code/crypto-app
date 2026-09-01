@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قیمت ارزهای دیجیتال و طلا</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-4">
+    <div class="max-w-md mx-auto pb-10">
+        <h1 class="text-2xl font-bold text-center mb-6 text-yellow-400">🚀 قیمت لحظه‌ای بازار</h1>
+        
+        <!-- طلا -->
+        <div class="bg-slate-800 p-4 rounded-xl mb-4 shadow-lg border border-slate-700 flex justify-between items-center">
+            <span class="text-gray-300 font-medium">✨ انس جهانی طلا</span>
+            <span id="gold-val" class="font-bold text-yellow-400">در حال بارگذاری...</span>
+        </div>
+
+        <div class="text-sm text-gray-400 mb-3 px-1">۱۰۰ ارز برتر جهان:</div>
+        
+        <!-- لیست ارزها -->
+        <div id="crypto-list" class="space-y-3">
+            <div class="text-center text-gray-400 py-10">در حال دریافت اطلاعات...</div>
+        </div>
+    </div>
+
+    <script>
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+
+        // دریافت قیمت ارزها از CoinGecko
+        fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('crypto-list');
+                list.innerHTML = '';
+                data.forEach((coin, index) => {
+                    const priceChange = coin.price_change_percentage_24h || 0;
+                    const color = priceChange >= 0 ? 'text-green-400' : 'text-red-400';
+                    const sign = priceChange >= 0 ? '+' : '';
+                    
+                    list.innerHTML += `
+                        <div class="bg-slate-800 p-3 rounded-xl flex justify-between items-center border border-slate-700 hover:border-slate-600 transition">
+                            <div class="flex items-center gap-3">
+                                <span class="text-gray-500 text-xs w-5">#${index+1}</span>
+                                <img src="${coin.image}" class="w-7 h-7">
+                                <div>
+                                    <div class="font-bold text-sm">${coin.name}</div>
+                                    <div class="text-xs text-gray-400 uppercase">${coin.symbol}</div>
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-bold text-sm">$${coin.current_price.toLocaleString()}</div>
+                                <div class="text-xs ${color}">${sign}${priceChange.toFixed(2)}%</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }).catch(err => {
+                document.getElementById('crypto-list').innerHTML = '<div class="text-center text-red-400">خطا در دریافت اطلاعات از سرور</div>';
+            });
+
+        // دریافت قیمت طلا
+        fetch('https://api.gold-api.com/price/XAU')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('gold-val').innerText = `$${data.price.toLocaleString()}`;
+            }).catch(() => {
+                document.getElementById('gold-val').innerText = '$2,650 (تخمین)';
+            });
+    </script>
+</body>
+</html>
