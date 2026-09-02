@@ -2,11 +2,15 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
+from aiogram.client.session.aiohttp import AiohttpSession
 
 API_TOKEN = '8664121709:AAGZLrm7vwV2uY8n6HKrPOtqsP6olCPJeEc'
 
 logging.basicConfig(level=logging.INFO)
-bot = Bot(token=API_TOKEN)
+
+# تنظیم پروکسی مخصوص اکانت‌های رایگان PythonAnywhere
+session = AiohttpSession(proxy="http://proxy.server:3128")
+bot = Bot(token=API_TOKEN, session=session)
 dp = Dispatcher()
 
 MINI_APP_URL = "https://kindamirdeveloper-code.github.io/crypto-app/"
