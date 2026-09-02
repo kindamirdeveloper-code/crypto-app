@@ -6,6 +6,8 @@
     <title>Binance Mini App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- کتابخانه TradingView برای رسم چارت‌های حرفه‌ای -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
@@ -14,7 +16,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* Fixed Loading Screen Spinner Animation */
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -72,7 +73,6 @@
         
         <!-- PRICES TAB -->
         <div id="pricesTab" class="w-full">
-            <!-- Header -->
             <div class="sticky top-0 z-30 bg-[#0b0e11]/95 backdrop-blur-md pt-5 pb-3 px-4 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <h1 class="text-xl font-bold text-white">Markets</h1>
@@ -96,16 +96,12 @@
                 </div>
             </div>
 
-            <!-- Header Titles -->
             <div class="flex justify-between px-5 mb-2 text-[11px] font-medium text-[#848e9c]">
                 <span>Name</span>
                 <span>Last Price</span>
             </div>
 
-            <!-- Coin List -->
-            <div id="cryptoList" class="px-2 space-y-1">
-                <!-- Javascript will inject list here -->
-            </div>
+            <div id="cryptoList" class="px-2 space-y-1"></div>
         </div>
 
         <!-- DONATE TAB -->
@@ -116,10 +112,8 @@
                         <path d="M11.944 14.86c-4.484 0-8.243-1.047-8.243-2.338 0-1.29 3.76-2.337 8.243-2.337s8.242 1.047 8.242 2.337c0 1.29-3.758 2.338-8.242 2.338zM12.057 9.38v-3.79h3.693V2.42H8.384v3.17h3.673v3.79c-4.966.173-9.056 1.455-9.056 3.012 0 1.637 4.542 2.966 10.144 2.966 5.6 0 10.142-1.33 10.142-2.966 0-1.558-4.092-2.84-9.058-3.013H12.057v7.502c-1.393-.11-2.67-.327-3.673-.61v3.313c1.233.393 2.68.653 4.153.653 1.22 0 2.457-.183 3.695-.533v-3.23c-1.258.336-2.735.59-4.172.637v-7.533z"/>
                     </svg>
                 </div>
-                
                 <h2 class="text-lg font-bold text-white mb-1">Support the Project</h2>
                 <p class="text-sm text-[#848e9c] mb-6">Your contributions help us maintain and improve this service.</p>
-
                 <div class="space-y-3">
                     <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
                         <div class="flex justify-between items-center mb-2">
@@ -132,22 +126,28 @@
                             </button>
                         </div>
                     </div>
-
-                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f</span>
-                            <button onclick="copyAddress('0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
-                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- MODAL FOR TRADINGVIEW CHART (1H & 3H) -->
+    <div id="chartModal" class="fixed inset-0 bg-[#0b0e11] z-50 hidden flex flex-col">
+        <div class="flex items-center justify-between px-4 py-3 bg-[#181a20] border-b border-[#2b3139]">
+            <div class="flex items-center space-x-2">
+                <button onclick="closeChartModal()" class="p-1 rounded-lg text-[#848e9c] hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <span id="modalCoinTitle" class="font-bold text-white text-lg">BTC/USDT</span>
+            </div>
+            <!-- Timeframe Switcher (1H & 3H) -->
+            <div class="flex space-x-1 bg-[#2b3139] p-1 rounded-lg">
+                <button id="tf1h" onclick="changeTimeframe('60')" class="px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors">1H</button>
+                <button id="tf3h" onclick="changeTimeframe('180')" class="px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors">3H</button>
+            </div>
+        </div>
+        <div class="flex-1 w-full bg-[#0b0e11] relative" id="tradingview_container"></div>
     </div>
 
     <!-- Bottom Navigation -->
@@ -168,6 +168,9 @@
         let allCoins = [];
         let previousPrices = {};
         let isAppReady = false;
+        let currentSelectedSymbol = 'BTCUSDT';
+        let currentTimeframe = '60'; // Default 1H (60 minutes)
+        let tvWidget = null;
 
         const coinNames = {
             'BTC': 'Bitcoin', 'ETH': 'Ethereum', 'BNB': 'BNB', 'SOL': 'Solana', 'XRP': 'Ripple',
@@ -186,8 +189,6 @@
 
         function initApp() {
             fetchBinancePrices();
-            
-            // Exact 3 seconds loading screen timer
             setTimeout(() => {
                 const loader = document.getElementById('loadingScreen');
                 if(loader) {
@@ -195,13 +196,12 @@
                     setTimeout(() => {
                         loader.style.display = 'none';
                         isAppReady = true;
-                    }, 500);
+                    }, 400);
                 }
-            }, 3000);
+            }, 1500); // لودینگ سریع‌تر و روان‌تر
         }
 
         async function fetchBinancePrices() {
-            // Using multiple fallback endpoints to ensure data always loads
             const endpoints = [
                 'https://api.binance.com/api/v3/ticker/24hr',
                 'https://data-api.binance.vision/api/v3/ticker/24hr'
@@ -215,20 +215,15 @@
                         data = await response.json();
                         break;
                     }
-                } catch (e) {
-                    console.warn('Endpoint failed, trying fallback...', e);
-                }
+                } catch (e) {}
             }
 
-            if (!data) {
-                console.error('All API endpoints failed.');
-                return;
-            }
+            if (!data) return;
 
             try {
                 data = data.filter(item => item.symbol.endsWith('USDT') && !item.symbol.includes('UP') && !item.symbol.includes('DOWN'))
                            .sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
-                           .slice(0, 100);
+                           .slice(0, 80);
 
                 data.forEach(item => {
                     const current = parseFloat(item.lastPrice);
@@ -238,13 +233,9 @@
                     item.change24h = parseFloat(item.priceChangePercent);
 
                     if (previousPrices[item.symbol] !== undefined) {
-                        if (current > previousPrices[item.symbol]) {
-                            item.flash = 'flash-up';
-                        } else if (current < previousPrices[item.symbol]) {
-                            item.flash = 'flash-down';
-                        } else {
-                            item.flash = '';
-                        }
+                        if (current > previousPrices[item.symbol]) item.flash = 'flash-up';
+                        else if (current < previousPrices[item.symbol]) item.flash = 'flash-down';
+                        else item.flash = '';
                     } else {
                         item.flash = '';
                     }
@@ -253,9 +244,7 @@
 
                 allCoins = data;
                 renderList(allCoins);
-            } catch (error) {
-                console.error('Data Processing Error:', error);
-            }
+            } catch (error) {}
         }
 
         function renderList(coins) {
@@ -267,7 +256,6 @@
             const filtered = coins.filter(c => c.symbolClean.toLowerCase().includes(search) || c.fullName.toLowerCase().includes(search));
             
             let htmlContent = '';
-            
             if (filtered.length === 0 && allCoins.length > 0) {
                 htmlContent = '<div class="text-center py-10 text-[#848e9c] text-sm">No coins found</div>';
             } else {
@@ -278,7 +266,7 @@
                     const iconUrl = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${coin.symbolClean.toLowerCase()}.svg`;
 
                     htmlContent += `
-                        <div class="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-[#2b3139]/50 transition-colors cursor-pointer">
+                        <div onclick="openChart('${coin.symbol}')" class="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-[#2b3139]/50 transition-colors cursor-pointer">
                             <div class="flex items-center space-x-3">
                                 <img src="${iconUrl}" onerror="this.outerHTML='<div class=\\'w-8 h-8 rounded-full bg-[#2b3139] flex items-center justify-center font-bold text-xs text-[#fcd535]\\'>${coin.symbolClean.charAt(0)}</div>'" class="w-8 h-8 rounded-full" alt="${coin.symbolClean}">
                                 <div class="flex flex-col">
@@ -298,13 +286,55 @@
                     `;
                 });
             }
-            
             container.innerHTML = htmlContent;
-            
             if (focusedElementId === 'searchInput') {
                 const input = document.getElementById('searchInput');
                 if(input) input.focus();
             }
+        }
+
+        // --- CHART FUNCTIONS ---
+        function openChart(symbol) {
+            currentSelectedSymbol = symbol;
+            document.getElementById('modalCoinTitle').innerText = symbol.replace('USDT', '/USDT');
+            document.getElementById('chartModal').classList.remove('hidden');
+            loadTradingViewChart(symbol, currentTimeframe);
+        }
+
+        function closeChartModal() {
+            document.getElementById('chartModal').classList.add('hidden');
+            document.getElementById('tradingview_container').innerHTML = '';
+        }
+
+        function changeTimeframe(tf) {
+            currentTimeframe = tf;
+            if(tf === '60') {
+                document.getElementById('tf1h').className = "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors";
+                document.getElementById('tf3h').className = "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
+            } else {
+                document.getElementById('tf3h').className = "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors";
+                document.getElementById('tf1h').className = "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
+            }
+            loadTradingViewChart(currentSelectedSymbol, currentTimeframe);
+        }
+
+        function loadTradingViewChart(symbol, timeframe) {
+            document.getElementById('tradingview_container').innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": "BINANCE:" + symbol,
+                "interval": timeframe,
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#181a20",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_container"
+            });
         }
 
         const searchInput = document.getElementById('searchInput');
@@ -329,7 +359,6 @@
                     icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
                     icon.classList.add('text-[#0ecb81]');
                     btnElement.classList.add('bg-[#0ecb81]/10');
-                    
                     setTimeout(() => {
                         icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>`;
                         icon.classList.remove('text-[#0ecb81]');
@@ -350,12 +379,10 @@
             if (tab === 'prices') {
                 pricesTab.classList.remove('hidden');
                 donateTab.classList.add('hidden');
-
                 btnPrices.classList.replace('bg-transparent', 'bg-[#2b3139]');
                 btnPrices.classList.replace('text-[#848e9c]', 'text-white');
                 textPrices.classList.remove('max-w-0', 'opacity-0');
                 textPrices.classList.add('opacity-100');
-
                 btnDonate.classList.replace('bg-[#2b3139]', 'bg-transparent');
                 btnDonate.classList.replace('text-white', 'text-[#848e9c]');
                 textDonate.classList.remove('opacity-100');
@@ -363,12 +390,10 @@
             } else {
                 pricesTab.classList.add('hidden');
                 donateTab.classList.remove('hidden');
-
                 btnDonate.classList.replace('bg-transparent', 'bg-[#2b3139]');
                 btnDonate.classList.replace('text-[#848e9c]', 'text-white');
                 textDonate.classList.remove('max-w-0', 'opacity-0');
                 textDonate.classList.add('opacity-100');
-
                 btnPrices.classList.replace('bg-[#2b3139]', 'bg-transparent');
                 btnPrices.classList.replace('text-white', 'text-[#848e9c]');
                 textPrices.classList.remove('opacity-100');
@@ -376,10 +401,8 @@
             }
         }
 
-        // Initialize App
         initApp();
 
-        // Auto Update Every 2 Seconds
         setInterval(() => {
             if (isAppReady) fetchBinancePrices();
         }, 2000);
