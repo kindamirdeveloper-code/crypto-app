@@ -351,4 +351,17 @@
                 // Inactive styling for Prices
                 btnPrices.classList.replace('bg-[#2b3139]', 'bg-transparent');
                 btnPrices.classList.replace('text-white', 'text-[#848e9c]');
-       
+                textPrices.classList.remove('opacity-100');
+                textPrices.classList.add('max-w-0', 'opacity-0');
+            }
+        }
+
+        // Start everything
+        initApp();
+        // Auto Update Every 2 Seconds
+        setInterval(() => {
+            if (isAppReady) fetchBinancePrices();
+        }, 2000);
+    </script>
+</body>
+</html>
