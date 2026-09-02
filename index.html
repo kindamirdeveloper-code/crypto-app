@@ -1,92 +1,176 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مینی‌اپ کریپتو بایننس</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Binance Mini App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; background-color: #07090e; color: #f3f4f6; }
-        .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.06); }
-        #loadingScreen { transition: opacity 0.4s ease, visibility 0.4s ease; }
-        .flash-green { color: #22c55e !important; transform: scale(1.02); transition: all 0.3s ease; }
-        .flash-red { color: #ef4444 !important; transform: scale(1.02); transition: all 0.3s ease; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        .animate-float { animation: float 2s ease-in-out infinite; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0b0e11; /* Binance Dark Background */
+            color: #eaecef; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Loading Screen Spinner */
+        .binance-spinner {
+            border: 3px solid rgba(252, 213, 53, 0.1);
+            border-top-color: #fcd535;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Color Variables */
+        .text-binance-yellow { color: #fcd535; }
+        .bg-binance-yellow { background-color: #fcd535; }
+        .text-binance-green { color: #0ecb81; }
+        .text-binance-red { color: #f6465d; }
+        
+        /* Cards & Inputs */
+        .b-card { background-color: #181a20; }
+        .b-input { background-color: #2b3139; color: #eaecef; }
+        .b-input::placeholder { color: #848e9c; }
+
+        /* Flash Animations for Price Updates */
+        @keyframes flashGreen {
+            0% { color: #0ecb81; text-shadow: 0 0 10px rgba(14, 203, 129, 0.5); transform: scale(1.02); }
+            100% { color: inherit; text-shadow: none; transform: scale(1); }
+        }
+        @keyframes flashRed {
+            0% { color: #f6465d; text-shadow: 0 0 10px rgba(246, 70, 93, 0.5); transform: scale(1.02); }
+            100% { color: inherit; text-shadow: none; transform: scale(1); }
+        }
+        .flash-up { animation: flashGreen 0.6s ease-out; color: #0ecb81 !important; font-weight: 600; }
+        .flash-down { animation: flashRed 0.6s ease-out; color: #f6465d !important; font-weight: 600; }
+
+        /* Live Indicator */
+        @keyframes pulse-live {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .live-dot { animation: pulse-live 1.5s infinite; }
+
+        /* Bottom Nav Transitions */
+        .nav-pill { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-text { transition: max-width 0.3s ease, opacity 0.3s ease; }
     </style>
 </head>
-<body class="min-h-screen pb-28 selection:bg-amber-500 selection:text-black">
+<body class="min-h-screen pb-24 selection:bg-[#fcd535] selection:text-black">
 
-    <!-- صفحه لودینگ سریع با انیمیشن و پروگرس‌بار -->
-    <div id="loadingScreen" class="fixed inset-0 bg-[#07090e] z-50 flex flex-col items-center justify-center space-y-6">
-        <div class="animate-float">
-            <svg class="w-16 h-16 text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]" viewBox="0 0 32 32" fill="currentColor">
-                <path d="M16 0L9.41 6.59L16 13.18L22.59 6.59L16 0ZM4.71 11.29L0 16L4.71 20.71L9.41 16L4.71 11.29ZM27.29 11.29L22.59 16L27.29 20.71L32 16L27.29 11.29ZM16 18.82L9.41 25.41L16 32L22.59 25.41L16 18.82Z"/>
-            </svg>
-        </div>
-        <div class="w-44 bg-gray-900/80 rounded-full h-1.5 overflow-hidden p-0.5 border border-white/10 shadow-inner">
-            <div id="progressBar" class="bg-gradient-to-r from-amber-500 to-yellow-300 h-full rounded-full transition-all duration-300" style="width: 100%"></div>
-        </div>
+    <div id="loadingScreen" class="fixed inset-0 bg-[#0b0e11] z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="binance-spinner mb-5"></div>
+        <div class="text-[#fcd535] text-lg font-bold tracking-[0.2em] ml-2">BINANCE</div>
     </div>
 
-    <div class="max-w-md mx-auto p-4 space-y-4">
+    <div class="max-w-md mx-auto w-full">
         
-        <!-- صفحه اصلی -->
-        <div id="homeView" class="space-y-4">
-            <!-- هدر مینیمال فقط لوگوی بایننس -->
-            <div class="glass-card rounded-2xl py-3.5 px-4 flex items-center justify-center shadow-xl">
-                <svg class="w-7 h-7 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]" viewBox="0 0 32 32" fill="currentColor">
-                    <path d="M16 0L9.41 6.59L16 13.18L22.59 6.59L16 0ZM4.71 11.29L0 16L4.71 20.71L9.41 16L4.71 11.29ZM27.29 11.29L22.59 16L27.29 20.71L32 16L27.29 11.29ZM16 18.82L9.41 25.41L16 32L22.59 25.41L16 18.82Z"/>
-                </svg>
+        <div id="pricesTab" class="w-full">
+            <div class="sticky top-0 z-30 bg-[#0b0e11]/95 backdrop-blur-md pt-5 pb-3 px-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <h1 class="text-xl font-bold text-white">Markets</h1>
+                    <div class="flex items-center space-x-1.5 bg-[#2b3139] px-2 py-1 rounded-md">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#0ecb81] live-dot"></div>
+                        <span class="text-[10px] font-semibold text-[#848e9c] uppercase tracking-wider">Live</span>
+                    </div>
+                </div>
+                <button onclick="manualRefresh()" class="p-2 bg-[#181a20] rounded-xl text-[#848e9c] hover:text-white transition-colors">
+                    <svg id="refreshIcon" class="w-5 h-5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </button>
             </div>
 
-            <!-- سرچ‌بار -->
-            <div class="relative">
-                <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-500">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </span>
-                <input type="text" id="searchInput" placeholder="جستجو میان ۱۰۰ ارز برتر بایننس..." class="w-full glass-card rounded-2xl pr-11 pl-4 py-3.5 text-xs focus:outline-none focus:border-amber-500/50 text-white placeholder-gray-500 shadow-inner transition-all">
+            <div class="px-4 mb-4">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#848e9c]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </span>
+                    <input type="text" id="searchInput" placeholder="Search coin..." class="w-full b-input rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#fcd535] transition-all">
+                </div>
             </div>
 
-            <!-- لیست ارزها -->
-            <div id="cryptoList" class="space-y-2.5"></div>
+            <div class="flex justify-between px-5 mb-2 text-[11px] font-medium text-[#848e9c]">
+                <span>Name</span>
+                <span>Last Price</span>
+            </div>
+
+            <div id="cryptoList" class="px-2 space-y-1">
+                </div>
         </div>
 
-        <!-- صفحه دونیت -->
-        <div id="donateView" class="space-y-4 hidden pt-6">
-            <div class="glass-card rounded-3xl p-6 text-center space-y-4 shadow-xl border border-white/5">
-                <div class="w-16 h-16 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">
-                    💎
+        <div id="donateTab" class="w-full hidden pt-10 px-4">
+            <div class="b-card rounded-2xl p-6 text-center shadow-lg border border-[#2b3139]">
+                <div class="w-16 h-16 mx-auto mb-4 bg-[#26A17B]/10 rounded-full flex items-center justify-center">
+                    <svg class="w-10 h-10 text-[#26A17B]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.944 14.86c-4.484 0-8.243-1.047-8.243-2.338 0-1.29 3.76-2.337 8.243-2.337s8.242 1.047 8.242 2.337c0 1.29-3.758 2.338-8.242 2.338zM12.057 9.38v-3.79h3.693V2.42H8.384v3.17h3.673v3.79c-4.966.173-9.056 1.455-9.056 3.012 0 1.637 4.542 2.966 10.144 2.966 5.6 0 10.142-1.33 10.142-2.966 0-1.558-4.092-2.84-9.058-3.013H12.057v7.502c-1.393-.11-2.67-.327-3.673-.61v3.313c1.233.393 2.68.653 4.153.653 1.22 0 2.457-.183 3.695-.533v-3.23c-1.258.336-2.735.59-4.172.637v-7.533z"/>
+                    </svg>
                 </div>
-                <div class="space-y-1">
-                    <h2 class="text-base font-bold text-white">حمایت از توسعه‌دهنده</h2>
-                    <p class="text-xs text-gray-400 leading-relaxed">برای استمرار و توسعه امکانات پیشرفته، می‌توانید از پروژه حمایت کنید.</p>
-                </div>
-                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 text-xs text-gray-300 font-mono">
-                    USDT (TRC20): <br><span class="text-blue-400 select-all font-bold mt-1 block">TYourWalletAddressHere...</span>
+                
+                <h2 class="text-lg font-bold text-white mb-1">Support the Project</h2>
+                <p class="text-sm text-[#848e9c] mb-6">Your contributions help us maintain and improve this service.</p>
+
+                <div class="space-y-3">
+                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (TRC20)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L</span>
+                            <button onclick="copyAddress('TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
+                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f</span>
+                            <button onclick="copyAddress('0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
+                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- منوی ناوبری پایین صفحه -->
-    <div class="fixed bottom-3 left-4 right-4 bg-[#111827]/80 backdrop-blur-2xl border border-white/10 py-2 px-3 rounded-2xl z-40 max-w-sm mx-auto shadow-2xl">
-        <div class="flex justify-around items-center">
-            <button onclick="switchTab('home')" id="navHome" class="flex items-center space-x-2 space-x-reverse px-5 py-2 rounded-xl transition-all duration-300 bg-amber-500 text-black shadow-lg shadow-amber-500/20 font-bold">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span class="text-xs nav-text">بازار زنده</span>
+    <div class="fixed bottom-0 w-full bg-[#181a20] border-t border-[#2b3139] z-40 pb-safe">
+        <div class="flex justify-around items-center px-2 py-2 max-w-md mx-auto">
+            
+            <button onclick="switchTab('prices')" id="btnPrices" class="nav-pill flex items-center space-x-2 px-4 py-2 rounded-2xl bg-[#2b3139] text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                <span id="textPrices" class="text-sm font-semibold nav-text opacity-100">Prices</span>
             </button>
-            <button onclick="switchTab('donate')" id="navDonate" class="flex items-center space-x-2 space-x-reverse px-4 py-2 rounded-xl transition-all duration-300 text-gray-400 hover:text-white">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                <span class="text-xs font-bold nav-text hidden">حمایت</span>
+
+            <button onclick="switchTab('donate')" id="btnDonate" class="nav-pill flex items-center space-x-2 px-4 py-2 rounded-2xl text-[#848e9c] bg-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                <span id="textDonate" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden">Donate</span>
             </button>
+
         </div>
     </div>
 
     <script>
         let allCoins = [];
         let previousPrices = {};
+        let isAppReady = false;
+
+        // Dictionary to map symbols to proper names (Top coins)
+        const coinNames = {
+            'BTC': 'Bitcoin', 'ETH': 'Ethereum', 'BNB': 'BNB', 'SOL': 'Solana', 'XRP': 'Ripple',
+            'ADA': 'Cardano', 'DOGE': 'Dogecoin', 'TRX': 'TRON', 'DOT': 'Polkadot', 'MATIC': 'Polygon',
+            'LTC': 'Litecoin', 'SHIB': 'Shiba Inu', 'AVAX': 'Avalanche', 'LINK': 'Chainlink', 'ATOM': 'Cosmos',
+            'UNI': 'Uniswap', 'XLM': 'Stellar', 'NEAR': 'NEAR Protocol', 'APT': 'Aptos', 'ARB': 'Arbitrum',
+            'OP': 'Optimism', 'INJ': 'Injective', 'SUI': 'Sui', 'PEPE': 'Pepe', 'FTM': 'Fantom'
+        };
 
         function formatPrice(price) {
             if (price < 0.0001) return price.toFixed(6);
@@ -95,14 +179,19 @@
             return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        // ناپدید شدن آنی لودینگ بعد از نیم ثانیه (بدون معطلی اینترنت)
-        setTimeout(() => {
-            const loader = document.getElementById('loadingScreen');
-            if (loader) {
+        // Initialize App & Loading Screen (Strict 3 Seconds)
+        function initApp() {
+            fetchBinancePrices(); // Start fetching immediately
+            
+            setTimeout(() => {
+                const loader = document.getElementById('loadingScreen');
                 loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 400);
-            }
-        }, 500);
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    isAppReady = true;
+                }, 500);
+            }, 3000); // 3 seconds exact wait per request
+        }
 
         async function fetchBinancePrices() {
             try {
@@ -110,6 +199,8 @@
                 if (!response.ok) return;
                 
                 let data = await response.json();
+                
+                // Filter USDT pairs, remove leveraged tokens, take top 100 by volume
                 data = data.filter(item => item.symbol.endsWith('USDT') && !item.symbol.includes('UP') && !item.symbol.includes('DOWN'))
                            .sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
                            .slice(0, 100);
@@ -117,14 +208,16 @@
                 data.forEach(item => {
                     const current = parseFloat(item.lastPrice);
                     item.symbolClean = item.symbol.replace('USDT', '');
+                    item.fullName = coinNames[item.symbolClean] || 'TetherUS';
                     item.price = current;
                     item.change24h = parseFloat(item.priceChangePercent);
 
+                    // Flash Logic
                     if (previousPrices[item.symbol] !== undefined) {
                         if (current > previousPrices[item.symbol]) {
-                            item.flash = 'flash-green';
+                            item.flash = 'flash-up';
                         } else if (current < previousPrices[item.symbol]) {
-                            item.flash = 'flash-red';
+                            item.flash = 'flash-down';
                         } else {
                             item.flash = '';
                         }
@@ -137,87 +230,125 @@
                 allCoins = data;
                 renderList(allCoins);
             } catch (error) {
-                console.error('Binance fetch error:', error);
+                console.error('API Error:', error);
             }
         }
 
         function renderList(coins) {
             const container = document.getElementById('cryptoList');
             const search = document.getElementById('searchInput').value.toLowerCase();
+            const focusedElementId = document.activeElement.id;
             
-            container.innerHTML = '';
+            const filtered = coins.filter(c => c.symbolClean.toLowerCase().includes(search) || c.fullName.toLowerCase().includes(search));
             
-            const filtered = coins.filter(c => c.symbolClean.toLowerCase().includes(search));
+            let htmlContent = '';
             
-            if (filtered.length === 0) {
-                if (allCoins.length === 0) {
-                    container.innerHTML = '<div class="text-center py-8 text-gray-400 text-xs">در حال بارگذاری قیمت‌ها...</div>';
-                } else {
-                    container.innerHTML = '<div class="text-center py-8 text-gray-500 text-xs">ارزی با این مشخصات یافت نشد!</div>';
-                }
-                return;
-            }
+            if (filtered.length === 0 && allCoins.length > 0) {
+                htmlContent = '<div class="text-center py-10 text-[#848e9c] text-sm">No coins found</div>';
+            } else {
+                filtered.forEach(coin => {
+                    const isPositive = coin.change24h >= 0;
+                    const changeBg = isPositive ? 'bg-[#0ecb81]' : 'bg-[#f6465d]';
+                    const changeSign = isPositive ? '+' : '';
+                    
+                    // Public CDN for Crypto Icons (fallback to CSS circle if error)
+                    const iconUrl = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${coin.symbolClean.toLowerCase()}.svg`;
 
-            filtered.forEach(coin => {
-                const isPositive = coin.change24h >= 0;
-                const card = document.createElement('div');
-                card.className = "glass-card rounded-2xl p-3.5 flex items-center justify-between transition-all hover:border-amber-500/40 shadow-sm";
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3 space-x-reverse">
-                        <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-amber-400">
-                            ${coin.symbolClean.substring(0, 3)}
+                    htmlContent += `
+                        <div class="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-[#2b3139]/50 transition-colors cursor-pointer">
+                            <div class="flex items-center space-x-3">
+                                <img src="${iconUrl}" onerror="this.outerHTML='<div class=\\'w-8 h-8 rounded-full bg-[#2b3139] flex items-center justify-center font-bold text-xs text-[#fcd535]\\'>${coin.symbolClean.charAt(0)}</div>'" class="w-8 h-8 rounded-full" alt="${coin.symbolClean}">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-white text-[15px] leading-tight">${coin.symbolClean}</span>
+                                    <span class="text-xs text-[#848e9c] mt-0.5">${coin.fullName}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span class="font-semibold text-white text-[15px] leading-tight transition-colors duration-300 ${coin.flash}">
+                                    $${formatPrice(coin.price)}
+                                </span>
+                                <span class="text-xs font-medium text-white px-1.5 py-0.5 rounded mt-1 ${changeBg}">
+                                    ${changeSign}${coin.change24h.toFixed(2)}%
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-white text-xs">${coin.symbolClean}</h3>
-                            <span class="text-[10px] text-gray-400">Binance Spot</span>
-                        </div>
-                    </div>
-                    <div class="text-left">
-                        <div class="font-mono font-bold text-xs ${coin.flash || 'text-white'}">$${formatPrice(coin.price)}</div>
-                        <div class="text-[10px] font-semibold ${isPositive ? 'text-emerald-400' : 'text-rose-400'} mt-0.5">
-                            ${isPositive ? '+' : ''}${coin.change24h.toFixed(2)}%
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
+                    `;
+                });
+            }
+            
+            container.innerHTML = htmlContent;
+            
+            // Keep focus on search input if it was active (prevent keyboard drop on mobile)
+            if (focusedElementId === 'searchInput') {
+                document.getElementById('searchInput').focus();
+            }
+        }
+
+        // Search Listener
+        document.getElementById('searchInput').addEventListener('input', () => renderList(allCoins));
+
+        // Manual Refresh Action
+        function manualRefresh() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('rotate-180');
+            fetchBinancePrices().then(() => {
+                setTimeout(() => icon.classList.remove('rotate-180'), 500);
             });
         }
 
-        function switchTab(tab) {
-            const homeView = document.getElementById('homeView');
-            const donateView = document.getElementById('donateView');
-            const navHome = document.getElementById('navHome');
-            const navDonate = document.getElementById('navDonate');
-
-            if (tab === 'home') {
-                homeView.classList.remove('hidden');
-                donateView.classList.add('hidden');
-
-                navHome.className = "flex items-center space-x-2 space-x-reverse px-5 py-2 rounded-xl transition-all duration-300 bg-amber-500 text-black shadow-lg shadow-amber-500/20 font-bold";
-                navHome.querySelector('.nav-text').classList.remove('hidden');
-
-                navDonate.className = "flex items-center space-x-2 space-x-reverse px-4 py-2 rounded-xl transition-all duration-300 text-gray-400 hover:text-white font-bold";
-                navDonate.querySelector('.nav-text').classList.add('hidden');
-            } else {
-                homeView.classList.add('hidden');
-                donateView.classList.remove('hidden');
-
-                navDonate.className = "flex items-center space-x-2 space-x-reverse px-5 py-2 rounded-xl transition-all duration-300 bg-amber-500 text-black shadow-lg shadow-amber-500/20 font-bold";
-                navDonate.querySelector('.nav-text').classList.remove('hidden');
-
-                navHome.className = "flex items-center space-x-2 space-x-reverse px-4 py-2 rounded-xl transition-all duration-300 text-gray-400 hover:text-white font-bold";
-                navHome.querySelector('.nav-text').classList.add('hidden');
-            }
+        // Copy Address Logic
+        function copyAddress(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = btnElement.querySelector('.copy-icon');
+                // Change icon to checkmark
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
+                icon.classList.add('text-[#0ecb81]');
+                btnElement.classList.add('bg-[#0ecb81]/10');
+                
+                setTimeout(() => {
+                    // Revert back
+                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>`;
+                    icon.classList.remove('text-[#0ecb81]');
+                    btnElement.classList.remove('bg-[#0ecb81]/10');
+                }, 2000);
+            });
         }
 
-        document.getElementById('searchInput').addEventListener('input', () => {
-            renderList(allCoins);
-        });
+        // Tab Switching Logic (Telegram Style)
+        function switchTab(tab) {
+            const pricesTab = document.getElementById('pricesTab');
+            const donateTab = document.getElementById('donateTab');
+            const btnPrices = document.getElementById('btnPrices');
+            const btnDonate = document.getElementById('btnDonate');
+            const textPrices = document.getElementById('textPrices');
+            const textDonate = document.getElementById('textDonate');
 
-        // اولین بارگیری آنی
-        fetchBinancePrices();
-        // به‌روزرسانی خودکار هر ۱ ثانیه
-        setInterval(fetchBinancePrices, 1000);
-    </script>
-</body>
-</html>
+            if (tab === 'prices') {
+                pricesTab.classList.remove('hidden');
+                donateTab.classList.add('hidden');
+
+                // Active styling for Prices
+                btnPrices.classList.replace('bg-transparent', 'bg-[#2b3139]');
+                btnPrices.classList.replace('text-[#848e9c]', 'text-white');
+                textPrices.classList.remove('max-w-0', 'opacity-0');
+                textPrices.classList.add('opacity-100');
+
+                // Inactive styling for Donate
+                btnDonate.classList.replace('bg-[#2b3139]', 'bg-transparent');
+                btnDonate.classList.replace('text-white', 'text-[#848e9c]');
+                textDonate.classList.remove('opacity-100');
+                textDonate.classList.add('max-w-0', 'opacity-0');
+            } else {
+                pricesTab.classList.add('hidden');
+                donateTab.classList.remove('hidden');
+
+                // Active styling for Donate
+                btnDonate.classList.replace('bg-transparent', 'bg-[#2b3139]');
+                btnDonate.classList.replace('text-[#848e9c]', 'text-white');
+                textDonate.classList.remove('max-w-0', 'opacity-0');
+                textDonate.classList.add('opacity-100');
+
+                // Inactive styling for Prices
+                btnPrices.classList.replace('bg-[#2b3139]', 'bg-transparent');
+                btnPrices.classList.replace('text-white', 'text-[#848e9c]');
+       
