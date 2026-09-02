@@ -119,7 +119,6 @@
                             </button>
                         </div>
                     </div>
-                    <!-- BEP20 Address Added Back -->
                     <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
@@ -201,19 +200,23 @@
                         isAppReady = true;
                     }, 300);
                 }
-            }, 1000); // فوق‌العاده سریع و روان
+            }, 800);
         }
 
         async function fetchBinancePrices() {
             const endpoints = [
-                'https://api.binance.com/api/v3/ticker/24hr',
-                'https://data-api.binance.vision/api/v3/ticker/24hr'
+                'https://data-api.binance.vision/api/v3/ticker/24hr',
+                'https://api1.binance.com/api/v3/ticker/24hr',
+                'https://api.binance.com/api/v3/ticker/24hr'
             ];
 
             let data = null;
             for (let url of endpoints) {
                 try {
-                    const response = await fetch(url);
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 3500); // حداکثر ۳.۵ ثانیه معطلی برای هر سرور
+                    const response = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timeoutId);
                     if (response.ok) {
                         data = await response.json();
                         break;
@@ -224,7 +227,6 @@
             if (!data) return;
 
             try {
-                // بهینه‌سازی سرعت: محدودسازی به ۵۰ ارز پرمعامله برتر برای بارگذاری آنی و بدون لگ
                 data = data.filter(item => item.symbol.endsWith('USDT') && !item.symbol.includes('UP') && !item.symbol.includes('DOWN'))
                            .sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
                            .slice(0, 50);
@@ -400,7 +402,7 @@
                 btnPrices.classList.replace('bg-[#2b3139]', 'bg-transparent');
                 btnPrices.classList.replace('text-white', 'text-[#848e9c]');
                 textPrices.classList.remove('opacity-100');
-                textPrices.classList.add('max-w-0', 'opacity-0');
+                textDonate.classList.add('max-w-0', 'opacity-0');
             }
         }
 
