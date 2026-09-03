@@ -164,6 +164,7 @@
                 <h2 class="text-lg font-bold text-white mb-1" data-i18n="supportTitle">Support the Project</h2>
                 <p class="text-sm text-[#848e9c] mb-6" data-i18n="supportDesc">Your contributions help us maintain and improve this service.</p>
                 <div class="space-y-3">
+                    <!-- TRC20 Address -->
                     <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (TRC20)</span>
@@ -175,8 +176,28 @@
                             </button>
                         </div>
                     </div>
+                    <!-- BEP20 Address -->
+                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f</span>
+                            <button onclick="copyAddress('0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
+                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Join Buttons -->
+                <div class="flex space-x-2 mt-4">
+                    <a href="https://t.me/GreedDropBot?start=8443620164" target="_blank" class="flex-1 bg-[#2b3139] text-white font-bold py-3 rounded-xl hover:bg-[#363d47] transition-colors text-center text-sm">Join1</a>
+                    <a href="https://t.me/RubyEarn_Bot/myapp?startapp=8443620164" target="_blank" class="flex-1 bg-[#fcd535] text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors text-center text-sm">Join2</a>
                 </div>
             </div>
+        </div>
+       
         </div>
 
     </div>
@@ -925,3 +946,4 @@
     </script>
 </body>
 </html>
+
