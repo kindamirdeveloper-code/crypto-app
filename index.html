@@ -7,32 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #0b0e11; 
             color: #eaecef; 
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s, color 0.3s;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .binance-spinner {
             border: 3px solid rgba(252, 213, 53, 0.1);
             border-top-color: #fcd535;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             animation: spin 0.8s linear infinite !important;
         }
         .text-binance-yellow { color: #fcd535; }
         .bg-binance-yellow { background-color: #fcd535; }
-        .text-binance-green { color: #0ecb81; }
-        .text-binance-red { color: #f6465d; }
         .b-card { background-color: #181a20; }
         .b-input { background-color: #2b3139; color: #eaecef; }
         .b-input::placeholder { color: #848e9c; }
+        
         @keyframes flashGreen {
             0% { color: #0ecb81; text-shadow: 0 0 10px rgba(14, 203, 129, 0.5); transform: scale(1.02); }
             100% { color: inherit; text-shadow: none; transform: scale(1); }
@@ -43,18 +40,27 @@
         }
         .flash-up { animation: flashGreen 0.6s ease-out; color: #0ecb81 !important; font-weight: 600; }
         .flash-down { animation: flashRed 0.6s ease-out; color: #f6465d !important; font-weight: 600; }
-        @keyframes pulse-live {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+        @keyframes pulse-live { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
         .live-dot { animation: pulse-live 1.5s infinite; }
         .nav-pill { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .nav-text { transition: max-width 0.3s ease, opacity 0.3s ease; }
-        
-        /* Hiding scrollbar for categories */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Light Theme Overrides (Dynamically applied without changing HTML logic) */
+        body.light-theme { background-color: #f3f4f6 !important; color: #111827 !important; }
+        body.light-theme .bg-\[\#0b0e11\] { background-color: #f3f4f6 !important; }
+        body.light-theme .bg-\[\#0b0e11\]\/95 { background-color: rgba(243, 244, 246, 0.95) !important; }
+        body.light-theme .bg-\[\#181a20\] { background-color: #ffffff !important; }
+        body.light-theme .bg-\[\#2b3139\] { background-color: #e5e7eb !important; color: #111827 !important; }
+        body.light-theme .text-white { color: #111827 !important; }
+        body.light-theme .text-\[\#848e9c\] { color: #6b7280 !important; }
+        body.light-theme .border-\[\#2b3139\] { border-color: #d1d5db !important; }
+        body.light-theme .hover\:bg-\[\#2b3139\]\/50:hover { background-color: #e5e7eb !important; }
+        
+        /* Toast Notification */
+        .toast-enter { transform: translateY(0); opacity: 1; }
+        .toast-exit { transform: translateY(-150%); opacity: 0; }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-[#fcd535] selection:text-black">
@@ -63,6 +69,18 @@
     <div id="loadingScreen" class="fixed inset-0 bg-[#0b0e11] z-50 flex flex-col items-center justify-center transition-opacity duration-500">
         <div class="binance-spinner mb-5"></div>
         <div class="text-[#fcd535] text-lg font-bold tracking-[0.2em] ml-2">BINANCE</div>
+    </div>
+
+    <!-- Alert Toast Notification -->
+    <div id="alertToast" class="fixed top-4 left-4 right-4 z-[70] bg-[#181a20] border-l-4 border-[#fcd535] p-4 rounded-xl shadow-2xl transition-all duration-500 toast-exit flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="bg-[#fcd535]/20 p-2 rounded-full"><svg class="w-6 h-6 text-[#fcd535]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg></div>
+            <div>
+                <h4 class="text-white font-bold text-sm">Price Alert Triggered!</h4>
+                <p id="toastMsg" class="text-xs text-[#848e9c] mt-0.5">BTC has reached your target.</p>
+            </div>
+        </div>
+        <button onclick="closeToast()" class="text-[#848e9c]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
     </div>
 
     <!-- Main Content Container -->
@@ -78,9 +96,14 @@
                         <span class="text-[10px] font-semibold text-[#848e9c] uppercase tracking-wider">Live</span>
                     </div>
                 </div>
-                <button onclick="manualRefresh()" class="p-2 bg-[#181a20] rounded-xl text-[#848e9c] hover:text-white transition-colors">
-                    <svg id="refreshIcon" class="w-5 h-5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                </button>
+                <div class="flex space-x-2">
+                    <button onclick="toggleTheme()" class="p-2 bg-[#181a20] rounded-xl text-[#848e9c] hover:text-[#fcd535] transition-colors">
+                        <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                    <button onclick="manualRefresh()" class="p-2 bg-[#181a20] rounded-xl text-[#848e9c] hover:text-white transition-colors">
+                        <svg id="refreshIcon" class="w-5 h-5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Search Bar -->
@@ -97,16 +120,13 @@
             <div class="flex space-x-5 px-4 mb-3 overflow-x-auto pb-1 scrollbar-hide text-sm font-medium border-b border-[#2b3139]">
                 <button onclick="setCategory('all')" id="cat-all" class="cat-btn text-[#fcd535] border-b-2 border-[#fcd535] pb-2 whitespace-nowrap transition-colors flex items-center gap-1">All Markets</button>
                 <button onclick="setCategory('trending')" id="cat-trending" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1">
-                    <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
-                    Trending
+                    <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg> Trending
                 </button>
                 <button onclick="setCategory('gainers')" id="cat-gainers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1">
-                    <svg class="w-4 h-4 text-[#0ecb81]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                    Gainers
+                    <svg class="w-4 h-4 text-[#0ecb81]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg> Gainers
                 </button>
                 <button onclick="setCategory('losers')" id="cat-losers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1">
-                    <svg class="w-4 h-4 text-[#f6465d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path></svg>
-                    Losers
+                    <svg class="w-4 h-4 text-[#f6465d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path></svg> Losers
                 </button>
             </div>
 
@@ -117,6 +137,20 @@
             </div>
 
             <div id="cryptoList" class="px-2 space-y-1"></div>
+        </div>
+
+        <!-- WATCHLIST & ALERTS TAB -->
+        <div id="watchlistTab" class="w-full hidden">
+            <div class="sticky top-0 z-30 bg-[#0b0e11]/95 backdrop-blur-md pt-5 pb-3 px-4 flex items-center justify-between border-b border-[#2b3139]">
+                <h1 class="text-xl font-bold text-white">Watchlist Alerts</h1>
+                <button onclick="openAlertModal()" class="px-3 py-1.5 bg-[#fcd535] text-black rounded-lg text-xs font-bold shadow-md hover:bg-yellow-400 transition-colors">+ Add Alert</button>
+            </div>
+            <div class="px-4 py-4">
+                <p class="text-xs text-[#848e9c] mb-4">Set price alerts. The bot will send you an English warning message when the target price is reached.</p>
+                <div id="alertsList" class="space-y-3">
+                    <!-- Alerts render here -->
+                </div>
+            </div>
         </div>
 
         <!-- DONATE TAB -->
@@ -141,24 +175,39 @@
                             </button>
                         </div>
                     </div>
-                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f</span>
-                            <button onclick="copyAddress('0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
-                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- MODAL FOR TRADINGVIEW CHART (1H & 3H) -->
+    <!-- MODAL FOR ALERTS -->
+    <div id="alertModal" class="fixed inset-0 bg-black/80 z-[60] hidden flex-col justify-end transition-opacity">
+        <div class="bg-[#181a20] w-full rounded-t-3xl p-6 border-t border-[#2b3139] shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-white font-bold text-lg">Create Price Alert</h3>
+                <button onclick="closeAlertModal()" class="text-[#848e9c] p-1 bg-[#2b3139] rounded-full hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-[#848e9c] mb-1.5 block uppercase tracking-wider">Select Coin</label>
+                    <select id="alertSymbolSelect" class="w-full b-input rounded-xl px-4 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#fcd535] border border-transparent focus:border-[#fcd535] transition-all">
+                        <!-- Options dynamically loaded -->
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-[#848e9c] mb-1.5 flex justify-between uppercase tracking-wider">
+                        <span>Target Price (USDT)</span>
+                        <span id="alertCurrentPriceHint" class="text-[#0ecb81]"></span>
+                    </label>
+                    <input type="number" id="alertPriceInput" step="any" placeholder="e.g. 65000" class="w-full b-input rounded-xl px-4 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#fcd535] border border-transparent focus:border-[#fcd535] transition-all">
+                </div>
+                <button onclick="saveNewAlert()" class="w-full bg-[#fcd535] text-black font-bold py-3.5 rounded-xl mt-3 hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/20">Set Alert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOR TRADINGVIEW CHART -->
     <div id="chartModal" class="fixed inset-0 bg-[#0b0e11] z-50 hidden flex flex-col">
         <div class="flex items-center justify-between px-4 py-3 bg-[#181a20] border-b border-[#2b3139]">
             <div class="flex items-center space-x-2">
@@ -178,11 +227,20 @@
     <!-- Bottom Navigation -->
     <div class="fixed bottom-0 w-full bg-[#181a20] border-t border-[#2b3139] z-40 pb-safe">
         <div class="flex justify-around items-center px-2 py-2 max-w-md mx-auto">
-            <button onclick="switchTab('prices')" id="btnPrices" class="nav-pill flex items-center space-x-2 px-4 py-2 rounded-2xl bg-[#2b3139] text-white">
+            <!-- Tab 1: Prices -->
+            <button onclick="switchTab('prices')" id="btnPrices" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl bg-[#2b3139] text-white">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span id="textPrices" class="text-sm font-semibold nav-text opacity-100">Home</span>
             </button>
-            <button onclick="switchTab('donate')" id="btnDonate" class="nav-pill flex items-center space-x-2 px-4 py-2 rounded-2xl text-[#848e9c] bg-transparent">
+            
+            <!-- Tab 2: Watchlist / Alerts -->
+            <button onclick="switchTab('watchlist')" id="btnWatchlist" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl text-[#848e9c] bg-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                <span id="textWatchlist" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden">Watchlist</span>
+            </button>
+
+            <!-- Tab 3: Donate -->
+            <button onclick="switchTab('donate')" id="btnDonate" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl text-[#848e9c] bg-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                 <span id="textDonate" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden">Donate</span>
             </button>
@@ -190,12 +248,48 @@
     </div>
 
     <script>
+        // Init Telegram WebApp API if available
+        const tg = window.Telegram?.WebApp;
+        if(tg) { tg.expand(); }
+
         let allCoins = [];
         let previousPrices = {};
         let isAppReady = false;
         let currentSelectedSymbol = 'BTCUSDT';
         let currentTimeframe = '60';
         let currentCategory = 'all';
+        
+        // Load User Alerts & Theme
+        let userAlerts = JSON.parse(localStorage.getItem('binance_bot_alerts')) || [];
+        let isLightMode = localStorage.getItem('app_theme') === 'light';
+        
+        if(isLightMode) {
+            document.body.classList.add('light-theme');
+            updateThemeIcon();
+        }
+
+        function toggleTheme() {
+            isLightMode = !isLightMode;
+            if (isLightMode) {
+                document.body.classList.add('light-theme');
+                localStorage.setItem('app_theme', 'light');
+            } else {
+                document.body.classList.remove('light-theme');
+                localStorage.setItem('app_theme', 'dark');
+            }
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if(isLightMode) {
+                // Sun Icon
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
+            } else {
+                // Moon Icon
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>`;
+            }
+        }
 
         function formatPrice(price) {
             if (price < 0.0001) return price.toFixed(6);
@@ -206,6 +300,7 @@
 
         async function initApp() {
             await fetchBinancePrices();
+            renderAlertsList();
             const loader = document.getElementById('loadingScreen');
             if (loader) {
                 loader.style.opacity = '0';
@@ -228,7 +323,6 @@
                 
                 const data = await response.json();
 
-                // Filter Binance USDT trading pairs (excluding tokens with UP/DOWN/BULL/BEAR)
                 const usdtPairs = data.filter(item => 
                     item.symbol.endsWith('USDT') && 
                     !item.symbol.includes('UP') && 
@@ -237,7 +331,6 @@
                     !item.symbol.includes('BEAR')
                 );
 
-                // Sort by 24h Volume to show top market coins first
                 usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
 
                 let formattedData = usdtPairs.slice(0, 100).map(item => {
@@ -267,10 +360,171 @@
 
                 allCoins = formattedData;
                 renderList(allCoins);
+                checkPriceAlerts(); // Check alerts automatically
             } catch (error) {
                 console.error("Error loading Binance data:", error);
             }
         }
+
+        // ================= ALERTS & WATCHLIST LOGIC =================
+
+        function openAlertModal() {
+            const select = document.getElementById('alertSymbolSelect');
+            select.innerHTML = '';
+            
+            // Populate select with coins alphabetically for easier finding
+            let sortedCoins = [...allCoins].sort((a,b) => a.symbolClean.localeCompare(b.symbolClean));
+            sortedCoins.forEach(coin => {
+                select.innerHTML += `<option value="${coin.symbol}">${coin.symbolClean} / USDT</option>`;
+            });
+
+            document.getElementById('alertPriceInput').value = '';
+            
+            // Listen to select change to update hint
+            select.onchange = () => {
+                const c = allCoins.find(x => x.symbol === select.value);
+                if(c) document.getElementById('alertCurrentPriceHint').innerText = `Current: $${formatPrice(c.price)}`;
+            };
+            select.onchange(); // Trigger manually once
+
+            document.getElementById('alertModal').classList.remove('hidden');
+            document.getElementById('alertModal').classList.add('flex');
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alertModal').classList.add('hidden');
+            document.getElementById('alertModal').classList.remove('flex');
+        }
+
+        function saveNewAlert() {
+            const symbol = document.getElementById('alertSymbolSelect').value;
+            const targetPrice = parseFloat(document.getElementById('alertPriceInput').value);
+            
+            if(!targetPrice || targetPrice <= 0) {
+                alert('Please enter a valid target price.');
+                return;
+            }
+
+            const coin = allCoins.find(c => c.symbol === symbol);
+            if(!coin) return;
+
+            // Determine if alert is for crossing UP or crossing DOWN
+            const condition = targetPrice > coin.price ? 'UP' : 'DOWN';
+            
+            const newAlert = {
+                id: Date.now().toString(),
+                symbol: symbol,
+                symbolClean: coin.symbolClean,
+                targetPrice: targetPrice,
+                condition: condition,
+                active: true
+            };
+
+            userAlerts.push(newAlert);
+            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
+            
+            closeAlertModal();
+            renderAlertsList();
+        }
+
+        function deleteAlert(id) {
+            userAlerts = userAlerts.filter(a => a.id !== id);
+            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
+            renderAlertsList();
+        }
+
+        function renderAlertsList() {
+            const container = document.getElementById('alertsList');
+            if(userAlerts.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 bg-[#181a20] rounded-2xl border border-[#2b3139]"><p class="text-[#848e9c] text-sm">No price alerts set yet.</p></div>`;
+                return;
+            }
+
+            let html = '';
+            userAlerts.forEach(alert => {
+                const coin = allCoins.find(c => c.symbol === alert.symbol);
+                const currentPrice = coin ? formatPrice(coin.price) : '...';
+                const statusColor = alert.active ? 'text-[#fcd535]' : 'text-[#848e9c]';
+                const statusText = alert.active ? 'Active' : 'Triggered';
+                
+                html += `
+                    <div class="flex items-center justify-between p-4 bg-[#181a20] rounded-xl border border-[#2b3139]">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="font-bold text-white text-base">${alert.symbolClean}</span>
+                                <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#2b3139] ${statusColor}">${statusText}</span>
+                            </div>
+                            <div class="text-xs text-[#848e9c]">
+                                Target: <strong class="text-white">$${formatPrice(alert.targetPrice)}</strong>
+                                <span class="mx-1">•</span> Current: $${currentPrice}
+                            </div>
+                        </div>
+                        <button onclick="deleteAlert('${alert.id}')" class="p-2 bg-[#2b3139] text-[#f6465d] rounded-lg hover:bg-[#f6465d] hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function checkPriceAlerts() {
+            let triggeredAny = false;
+
+            userAlerts.forEach(alert => {
+                if(!alert.active) return;
+                
+                const coin = allCoins.find(c => c.symbol === alert.symbol);
+                if(!coin) return;
+
+                let isTriggered = false;
+                if (alert.condition === 'UP' && coin.price >= alert.targetPrice) isTriggered = true;
+                if (alert.condition === 'DOWN' && coin.price <= alert.targetPrice) isTriggered = true;
+
+                if (isTriggered) {
+                    alert.active = false; // Mark as triggered
+                    triggeredAny = true;
+                    
+                    // Show Notification in App
+                    showToast(`The price of ${alert.symbolClean} has reached $${formatPrice(coin.price)}!`);
+
+                    // Try to send data back to Bot if running in Telegram WebApp
+                    if(tg && tg.sendData) {
+                        try {
+                            tg.sendData(JSON.stringify({
+                                action: 'alert_triggered',
+                                symbol: alert.symbol,
+                                price: coin.price,
+                                message: `⚠️ Alert: ${alert.symbolClean} has reached your target price of $${formatPrice(alert.targetPrice)}`
+                            }));
+                        } catch(e) { console.log('Telegram API sendData error', e); }
+                    }
+                }
+            });
+
+            if(triggeredAny) {
+                localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
+                if(document.getElementById('watchlistTab').classList.contains('hidden') === false) {
+                    renderAlertsList();
+                }
+            }
+        }
+
+        function showToast(message) {
+            document.getElementById('toastMsg').innerText = message;
+            const toast = document.getElementById('alertToast');
+            toast.classList.remove('toast-exit');
+            toast.classList.add('toast-enter');
+            setTimeout(() => { closeToast(); }, 5000);
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('alertToast');
+            toast.classList.remove('toast-enter');
+            toast.classList.add('toast-exit');
+        }
+
+        // ================= NAVIGATION & RENDER LOGIC =================
 
         function setCategory(cat) {
             currentCategory = cat;
@@ -371,10 +625,10 @@
                 "symbol": "BINANCE:" + symbol,
                 "interval": timeframe,
                 "timezone": "Etc/UTC",
-                "theme": "dark",
+                "theme": isLightMode ? "light" : "dark",
                 "style": "1",
                 "locale": "en",
-                "toolbar_bg": "#181a20",
+                "toolbar_bg": isLightMode ? "#ffffff" : "#181a20",
                 "enable_publishing": false,
                 "hide_top_toolbar": false,
                 "hide_legend": false,
@@ -384,17 +638,38 @@
         }
 
         const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', () => renderList(allCoins));
-        }
+        if (searchInput) searchInput.addEventListener('input', () => renderList(allCoins));
 
         function manualRefresh() {
             const icon = document.getElementById('refreshIcon');
             if(icon) icon.classList.add('rotate-180');
             fetchBinancePrices().then(() => {
-                setTimeout(() => {
-                    if(icon) icon.classList.remove('rotate-180');
-                }, 500);
+                setTimeout(() => { if(icon) icon.classList.remove('rotate-180'); }, 500);
+            });
+        }
+
+        function switchTab(tab) {
+            const tabs = ['prices', 'watchlist', 'donate'];
+            
+            tabs.forEach(t => {
+                const section = document.getElementById(t + 'Tab');
+                const btn = document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1));
+                const text = document.getElementById('text' + t.charAt(0).toUpperCase() + t.slice(1));
+                
+                if (t === tab) {
+                    section.classList.remove('hidden');
+                    btn.classList.replace('bg-transparent', 'bg-[#2b3139]');
+                    btn.classList.replace('text-[#848e9c]', 'text-white');
+                    text.classList.remove('max-w-0', 'opacity-0');
+                    text.classList.add('opacity-100');
+                    if (tab === 'watchlist') renderAlertsList();
+                } else {
+                    section.classList.add('hidden');
+                    btn.classList.replace('bg-[#2b3139]', 'bg-transparent');
+                    btn.classList.replace('text-white', 'text-[#848e9c]');
+                    text.classList.remove('opacity-100');
+                    text.classList.add('max-w-0', 'opacity-0');
+                }
             });
         }
 
@@ -412,39 +687,6 @@
                     }, 2000);
                 }
             });
-        }
-
-        function switchTab(tab) {
-            const pricesTab = document.getElementById('pricesTab');
-            const donateTab = document.getElementById('donateTab');
-            const btnPrices = document.getElementById('btnPrices');
-            const btnDonate = document.getElementById('btnDonate');
-            const textPrices = document.getElementById('textPrices');
-            const textDonate = document.getElementById('textDonate');
-
-            if (tab === 'prices') {
-                pricesTab.classList.remove('hidden');
-                donateTab.classList.add('hidden');
-                btnPrices.classList.replace('bg-transparent', 'bg-[#2b3139]');
-                btnPrices.classList.replace('text-[#848e9c]', 'text-white');
-                textPrices.classList.remove('max-w-0', 'opacity-0');
-                textPrices.classList.add('opacity-100');
-                btnDonate.classList.replace('bg-[#2b3139]', 'bg-transparent');
-                btnDonate.classList.replace('text-white', 'text-[#848e9c]');
-                textDonate.classList.remove('opacity-100');
-                textDonate.classList.add('max-w-0', 'opacity-0');
-            } else {
-                pricesTab.classList.add('hidden');
-                donateTab.classList.remove('hidden');
-                btnDonate.classList.replace('bg-transparent', 'bg-[#2b3139]');
-                btnDonate.classList.replace('text-[#848e9c]', 'text-white');
-                textDonate.classList.remove('max-w-0', 'opacity-0');
-                textDonate.classList.add('opacity-100');
-                btnPrices.classList.replace('bg-[#2b3139]', 'bg-transparent');
-                btnPrices.classList.replace('text-white', 'text-[#848e9c]');
-                textPrices.classList.remove('opacity-100');
-                textPrices.classList.add('max-w-0', 'opacity-0');
-            }
         }
 
         initApp();
