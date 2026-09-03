@@ -51,6 +51,10 @@
         .live-dot { animation: pulse-live 1.5s infinite; }
         .nav-pill { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .nav-text { transition: max-width 0.3s ease, opacity 0.3s ease; }
+        
+        /* Hiding scrollbar for categories */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-[#fcd535] selection:text-black">
@@ -64,11 +68,11 @@
     <!-- Main Content Container -->
     <div class="max-w-md mx-auto w-full">
         
-        <!-- PRICES TAB -->
+        <!-- HOME / PRICES TAB -->
         <div id="pricesTab" class="w-full">
             <div class="sticky top-0 z-30 bg-[#0b0e11]/95 backdrop-blur-md pt-5 pb-3 px-4 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <h1 class="text-xl font-bold text-white">Markets</h1>
+                    <h1 class="text-xl font-bold text-white">Home</h1>
                     <div class="flex items-center space-x-1.5 bg-[#2b3139] px-2 py-1 rounded-md">
                         <div class="w-1.5 h-1.5 rounded-full bg-[#0ecb81] live-dot"></div>
                         <span class="text-[10px] font-semibold text-[#848e9c] uppercase tracking-wider">Live</span>
@@ -80,15 +84,24 @@
             </div>
 
             <!-- Search Bar -->
-            <div class="px-4 mb-4">
+            <div class="px-4 mb-3">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#848e9c]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </span>
-                    <input type="text" id="searchInput" placeholder="Search coin..." class="w-full b-input rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#fcd535] transition-all">
+                    <input type="text" id="searchInput" placeholder="Search coin..." class="w-full b-input rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#fcd535] transition-all">
                 </div>
             </div>
 
+            <!-- Categories Sub-Nav -->
+            <div class="flex space-x-5 px-4 mb-3 overflow-x-auto pb-1 scrollbar-hide text-sm font-medium border-b border-[#2b3139]">
+                <button onclick="setCategory('all')" id="cat-all" class="cat-btn text-[#fcd535] border-b-2 border-[#fcd535] pb-2 whitespace-nowrap transition-colors">All Markets</button>
+                <button onclick="setCategory('trending')" id="cat-trending" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1">🔥 Trending</button>
+                <button onclick="setCategory('gainers')" id="cat-gainers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1">🚀 Gainers</button>
+                <button onclick="setCategory('losers')" id="cat-losers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1">🔻 Losers</button>
+            </div>
+
+            <!-- List Header -->
             <div class="flex justify-between px-5 mb-2 text-[11px] font-medium text-[#848e9c]">
                 <span>Name</span>
                 <span>Last Price</span>
@@ -157,8 +170,8 @@
     <div class="fixed bottom-0 w-full bg-[#181a20] border-t border-[#2b3139] z-40 pb-safe">
         <div class="flex justify-around items-center px-2 py-2 max-w-md mx-auto">
             <button onclick="switchTab('prices')" id="btnPrices" class="nav-pill flex items-center space-x-2 px-4 py-2 rounded-2xl bg-[#2b3139] text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                <span id="textPrices" class="text-sm font-semibold nav-text opacity-100">Prices</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span id="textPrices" class="text-sm font-semibold nav-text opacity-100">Home</span>
             </button>
             <button onclick="switchTab('donate')" id="btnDonate" class="nav-pill flex items-center space-x-2 px-4 py-2 rounded-2xl text-[#848e9c] bg-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -173,6 +186,7 @@
         let isAppReady = false;
         let currentSelectedSymbol = 'BTCUSDT';
         let currentTimeframe = '60';
+        let currentCategory = 'all';
 
         function formatPrice(price) {
             if (price < 0.0001) return price.toFixed(6);
@@ -232,13 +246,37 @@
             } catch (error) {}
         }
 
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('text-[#fcd535]', 'border-[#fcd535]');
+                btn.classList.add('text-[#848e9c]', 'border-transparent');
+            });
+            const activeBtn = document.getElementById('cat-' + cat);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-[#848e9c]', 'border-transparent');
+                activeBtn.classList.add('text-[#fcd535]', 'border-[#fcd535]');
+            }
+            renderList(allCoins);
+        }
+
         function renderList(coins) {
             const container = document.getElementById('cryptoList');
             const searchInputElem = document.getElementById('searchInput');
             const search = searchInputElem ? searchInputElem.value.toLowerCase() : '';
             const focusedElementId = document.activeElement ? document.activeElement.id : '';
             
-            const filtered = coins.filter(c => c.symbolClean.toLowerCase().includes(search) || c.fullName.toLowerCase().includes(search));
+            // اول جستجو را اعمال می‌کنیم
+            let filtered = coins.filter(c => c.symbolClean.toLowerCase().includes(search) || c.fullName.toLowerCase().includes(search));
+            
+            // سپس فیلتر دسته‌بندی را اعمال می‌کنیم
+            if (currentCategory === 'trending') {
+                filtered = filtered.sort((a, b) => b.quoteVolume - a.quoteVolume).slice(0, 20);
+            } else if (currentCategory === 'gainers') {
+                filtered = filtered.sort((a, b) => b.change24h - a.change24h).slice(0, 20);
+            } else if (currentCategory === 'losers') {
+                filtered = filtered.sort((a, b) => a.change24h - b.change24h).slice(0, 20);
+            }
             
             let htmlContent = '';
             if (filtered.length === 0 && allCoins.length > 0) {
@@ -381,7 +419,7 @@
                 btnPrices.classList.replace('bg-[#2b3139]', 'bg-transparent');
                 btnPrices.classList.replace('text-white', 'text-[#848e9c]');
                 textPrices.classList.remove('opacity-100');
-                textDonate.classList.add('max-w-0', 'opacity-0');
+                textPrices.classList.add('max-w-0', 'opacity-0');
             }
         }
 
