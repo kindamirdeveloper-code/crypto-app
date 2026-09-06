@@ -14,7 +14,6 @@
             background-color: #0b0e11; 
             color: #eaecef; 
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s, color 0.3s;
         }
         body.rtl { direction: rtl; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -41,23 +40,17 @@
         }
         .flash-up { animation: flashGreen 0.6s ease-out; color: #0ecb81 !important; font-weight: 600; }
         .flash-down { animation: flashRed 0.6s ease-out; color: #f6465d !important; font-weight: 600; }
+        
         @keyframes pulse-live { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
         .live-dot { animation: pulse-live 1.5s infinite; }
+        
+        @keyframes subtle-pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+        .trending-flame { animation: subtle-pulse 2s infinite ease-in-out; }
+
         .nav-pill { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .nav-text { transition: max-width 0.3s ease, opacity 0.3s ease; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Light Theme Overrides */
-        body.light-theme { background-color: #f3f4f6 !important; color: #111827 !important; }
-        body.light-theme .bg-\[\#0b0e11\] { background-color: #f3f4f6 !important; }
-        body.light-theme .bg-\[\#0b0e11\]\/95 { background-color: rgba(243, 244, 246, 0.95) !important; }
-        body.light-theme .bg-\[\#181a20\] { background-color: #ffffff !important; }
-        body.light-theme .bg-\[\#2b3139\] { background-color: #e5e7eb !important; color: #111827 !important; }
-        body.light-theme .text-white { color: #111827 !important; }
-        body.light-theme .text-\[\#848e9c\] { color: #6b7280 !important; }
-        body.light-theme .border-\[\#2b3139\] { border-color: #d1d5db !important; }
-        body.light-theme .hover\:bg-\[\#2b3139\]\/50:hover { background-color: #e5e7eb !important; }
 
         .toast-enter { transform: translateY(0); opacity: 1; }
         .toast-exit { transform: translateY(-150%); opacity: 0; }
@@ -111,10 +104,16 @@
             <div class="flex space-x-5 px-4 mb-3 overflow-x-auto pb-1 scrollbar-hide text-sm font-medium border-b border-[#2b3139]">
                 <button onclick="setCategory('all')" id="cat-all" class="cat-btn text-[#fcd535] border-b-2 border-[#fcd535] pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="allMarkets">All Markets</button>
                 <button onclick="setCategory('trending')" id="cat-trending" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="trending">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="#e45c66">
-  <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.177A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152-.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248Z" clip-rule="evenodd"/>
-</svg>
- Trending
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 trending-flame" fill="url(#flameGrad)">
+                        <defs>
+                            <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%" stop-color="#f6465d" />
+                                <stop offset="100%" stop-color="#fcd535" />
+                            </linearGradient>
+                        </defs>
+                        <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.177A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152-.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248Z" clip-rule="evenodd"/>
+                    </svg>
+                    Trending
                 </button>
                 <button onclick="setCategory('gainers')" id="cat-gainers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="gainers">
                     <svg class="w-4 h-4 text-[#0ecb81]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg> Gainers
@@ -214,30 +213,27 @@
             </div>
 
             <div id="supportAdminSection" class="hidden">
-                <h3 class="text-sm font-bold text-[#f6465d] uppercase tracking-wider mb-3">All User Tickets</h3>
-                <div id="adminTicketsList" class="space-y-4 pb-6"></div>
-            </div>
+                <div class="flex space-x-2 mb-4 bg-[#2b3139] p-1.5 rounded-xl">
+                    <button onclick="switchAdminTab('tickets')" id="adminTabTickets" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-[#f6465d] text-white">Tickets</button>
+                    <button onclick="switchAdminTab('users')" id="adminTabUsers" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]">Users</button>
+                </div>
 
-        </div>
+                <div id="adminTicketsContainer">
+                    <h3 class="text-sm font-bold text-[#f6465d] uppercase tracking-wider mb-3">All User Tickets</h3>
+                    <div id="adminTicketsList" class="space-y-4 pb-6"></div>
+                </div>
 
-    </div>
-
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 z-[70] hidden flex-col justify-end transition-opacity">
-        <div class="bg-[#181a20] w-full rounded-t-3xl p-6 border-t border-[#2b3139] shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-white font-bold text-lg" data-i18n="settingsTitle">Settings</h3>
-                <button onclick="closeSettingsModal()" class="text-[#848e9c] p-1 bg-[#2b3139] rounded-full hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="space-y-5">
-                <div class="flex items-center justify-between py-2 border-b border-[#2b3139]">
-                    <span class="text-sm font-semibold text-white" data-i18n="themeLabel">Appearance Theme</span>
-                    <div class="flex space-x-2 bg-[#2b3139] p-1 rounded-xl">
-                        <button onclick="setTheme('dark')" id="themeDarkBtn" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black">Dark</button>
-                        <button onclick="setTheme('light')" id="themeLightBtn" class="px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]">Light</button>
+                <div id="adminUsersContainer" class="hidden">
+                    <div class="flex justify-between items-center mb-3 px-1">
+                        <h3 class="text-sm font-bold text-[#fcd535] uppercase tracking-wider">Users List</h3>
+                        <span class="text-[11px] font-bold bg-[#2b3139] px-2 py-1 rounded text-white" id="totalUsersCount">0 Users</span>
                     </div>
+                    <div id="adminUsersList" class="space-y-3 pb-6"></div>
                 </div>
             </div>
+
         </div>
+
     </div>
 
     <div id="alertModal" class="fixed inset-0 bg-black/80 z-[70] hidden flex-col justify-end transition-opacity">
@@ -273,7 +269,6 @@
                 </button>
                 <span id="modalCoinTitle" class="font-bold text-white text-lg">BTC/USDT</span>
             </div>
-
         </div>
         <div class="flex-1 w-full bg-[#0b0e11] relative" id="tradingview_container"></div>
     </div>
@@ -301,41 +296,8 @@
         const tg = window.Telegram?.WebApp;
         if(tg) { tg.expand(); }
 
-        const ADMIN_ID = 8443620164; // آیدی ادمین تعریف شده جهت نمایش تب پنل
+        const ADMIN_ID = 8443620164; 
         const CURRENT_USER_ID = tg?.initDataUnsafe?.user?.id || 12345; 
-
-        const translations = {
-            en: {
-                homeTitle: "Home",
-                searchPlaceholder: "Search coin...",
-                allMarkets: "All Markets",
-                trending: "Trending",
-                gainers: "Gainers",
-                losers: "Losers",
-                nameHeader: "Name",
-                priceHeader: "Last Price",
-                watchlistTitle: "Watchlist & Alerts",
-                addAlertBtn: "+ Add Alert",
-                favoriteCoinsHeader: "Favorite Markets",
-                priceAlertsHeader: "Price Alerts",
-                supportTitle: "Support the Project",
-                supportDesc: "Your contributions help us maintain and improve this service.",
-                settingsTitle: "Settings",
-                themeLabel: "Appearance Theme",
-                createAlertTitle: "Create Price Alert",
-                selectCoinLabel: "Select Coin",
-                targetPriceLabel: "Target Price (USDT)",
-                setAlertBtn: "Set Alert",
-                navHome: "Home",
-                navWatchlist: "Watchlist",
-                navSupport: "Support",
-                navDonate: "Donate",
-                navTicketing: "Ticketing",
-                navAdminPanel: "Admin",
-                ticketingTitle: "Submit a Ticket",
-                alertTriggeredTitle: "Price Alert Triggered!"
-            }
-        };
 
         let allCoins = [];
         let previousPrices = {};
@@ -348,7 +310,14 @@
         let userAlerts = JSON.parse(localStorage.getItem('binance_bot_alerts')) || [];
         let favoriteCoins = JSON.parse(localStorage.getItem('binance_favorites')) || ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT'];
         let appTickets = JSON.parse(localStorage.getItem('bot_support_tickets')) || []; 
-        let isLightMode = localStorage.getItem('app_theme') === 'light';
+
+        // داده‌های دمو برای کاربران (در واقعیت باید این اطلاعات را از backend که با پایتون نوشتی بگیری و اینجا پاس بدی)
+        const mockAdminUsers = [
+            { id: 8443620164, name: "Admin_A", status: "active", lastOnline: "Just now", sessionCount: 145 },
+            { id: 74635241, name: "Ali_Reza", status: "offline", lastOnline: "2 hours ago", sessionCount: 12 },
+            { id: 93847562, name: "SaraM", status: "active", lastOnline: "Just now", sessionCount: 43 },
+            { id: 11223344, name: "Unknown User", status: "offline", lastOnline: "Yesterday", sessionCount: 2 }
+        ];
 
         const domPrices = {};
         const domPercents = {};
@@ -365,7 +334,6 @@
             supportTab: document.getElementById('supportTab'),
             chartModal: document.getElementById('chartModal'),
             modalCoinTitle: document.getElementById('modalCoinTitle'),
-            settingsModal: document.getElementById('settingsModal'),
             alertModal: document.getElementById('alertModal'),
             alertsList: document.getElementById('alertsList'),
             favoriteCoinsList: document.getElementById('favoriteCoinsList'),
@@ -381,24 +349,6 @@
             'TONUSDT', 'NOTUSDT', 'PEPEUSDT', 'ARBUSDT', 'OPUSDT', 'SUIUSDT', 'APTUSDT', 'FETUSDT', 'RNDRUSDT', 'WLDUSDT',
             'FILUSDT', 'INJUSDT', 'NEARUSDT', 'RENDERUSDT', 'RUNEUSDT', 'TIAUSDT', 'SEIUSDT', 'ORDIUSDT', 'SATSUSDT', 'JUPUSDT'
         ];
-
-        function applyTheme() {
-            if(isLightMode) {
-                document.body.classList.add('light-theme');
-                document.getElementById('themeLightBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
-                document.getElementById('themeDarkBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
-            } else {
-                document.body.classList.remove('light-theme');
-                document.getElementById('themeDarkBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
-                document.getElementById('themeLightBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
-            }
-        }
-
-        function setTheme(theme) {
-            isLightMode = theme === 'light';
-            localStorage.setItem('app_theme', theme);
-            applyTheme();
-        }
 
         async function fetchInitialData() {
             try {
@@ -550,7 +500,6 @@
 
         elements.searchInput.addEventListener('input', renderList);
 
-        // -- Navigation Tab Logic --
         function switchTab(tabId) {
             elements.pricesTab.classList.add('hidden');
             elements.watchlistTab.classList.add('hidden');
@@ -687,19 +636,15 @@
             });
         }
 
-        function deleteAlert(id) {
-            userAlerts = userAlerts.filter(a => a.id !== id);
-            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
-            renderAlertsList();
-        }
-
-        // -- Ticketing & Support Logic --
         function checkAdminAccess() {
             if (CURRENT_USER_ID === ADMIN_ID) {
                 document.getElementById('subBtnAdmin').classList.remove('hidden');
             }
             renderUserTickets();
-            if (CURRENT_USER_ID === ADMIN_ID) renderAdminTickets();
+            if (CURRENT_USER_ID === ADMIN_ID) {
+                renderAdminTickets();
+                renderAdminUsers();
+            }
         }
 
         function switchSupportSection(section) {
@@ -724,8 +669,50 @@
             } else if (section === 'admin') {
                 document.getElementById('supportAdminSection').classList.remove('hidden');
                 document.getElementById('subBtnAdmin').className = "flex-1 py-2 text-sm font-bold rounded-lg bg-[#f6465d] text-white transition-colors";
-                renderAdminTickets();
+                switchAdminTab('tickets');
             }
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('adminTicketsContainer').classList.add('hidden');
+            document.getElementById('adminUsersContainer').classList.add('hidden');
+            document.getElementById('adminTabTickets').className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
+            document.getElementById('adminTabUsers').className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
+
+            if(tab === 'tickets') {
+                document.getElementById('adminTicketsContainer').classList.remove('hidden');
+                document.getElementById('adminTabTickets').className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-[#f6465d] text-white";
+                renderAdminTickets();
+            } else {
+                document.getElementById('adminUsersContainer').classList.remove('hidden');
+                document.getElementById('adminTabUsers').className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
+                renderAdminUsers();
+            }
+        }
+
+        function renderAdminUsers() {
+            const list = document.getElementById('adminUsersList');
+            list.innerHTML = '';
+            document.getElementById('totalUsersCount').innerText = `${mockAdminUsers.length} Users`;
+
+            mockAdminUsers.forEach(u => {
+                const isOnline = u.status === 'active';
+                list.innerHTML += `
+                    <div class="b-card p-3 rounded-xl border border-[#2b3139] flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <div class="w-10 h-10 rounded-full bg-[#2b3139] flex items-center justify-center text-white font-bold text-sm">${u.name.charAt(0)}</div>
+                                <div class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#181a20] ${isOnline ? 'bg-[#0ecb81]' : 'bg-[#848e9c]'}"></div>
+                            </div>
+                            <div>
+                                <div class="font-bold text-white text-sm">${u.name} <span class="text-[10px] text-[#848e9c] font-normal ml-1">ID: ${u.id}</span></div>
+                                <div class="text-[10px] text-[#848e9c] mt-0.5">Sessions: <span class="text-white">${u.sessionCount}</span> | Last: ${u.lastOnline}</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded ${isOnline ? 'bg-[#0ecb81]/20 text-[#0ecb81]' : 'bg-[#2b3139] text-[#848e9c]'}">${isOnline ? 'ONLINE' : 'OFFLINE'}</span>
+                    </div>
+                `;
+            });
         }
 
         function submitTicket() {
@@ -789,17 +776,17 @@
 
             allTickets.forEach(t => {
                 list.innerHTML += `
-                    <div class="b-card p-4 rounded-xl border border-[#2b3139] ${t.status === 'pending' ? 'border-l-4 border-l-yellow-500' : ''}">
+                    <div class="b-card p-4 rounded-xl border border-[#2b3139] ${t.status === 'pending' ? 'border-l-4 border-[#fcd535]' : ''}">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-[10px] font-bold text-white">User: ${t.userId}</span>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${t.status === 'answered' ? 'bg-[#0ecb81]/20 text-[#0ecb81]' : 'bg-yellow-500/20 text-yellow-500'}">${t.status.toUpperCase()}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${t.status === 'answered' ? 'bg-[#0ecb81]/20 text-[#0ecb81]' : 'bg-[#fcd535]/20 text-[#fcd535]'}">${t.status.toUpperCase()}</span>
                         </div>
                         <p class="text-sm text-[#eaecef] mb-3 p-2 bg-[#0b0e11] rounded-lg">${t.text}</p>
                         ${t.status === 'pending' ? `
-                            <textarea id="reply-${t.id}" rows="2" placeholder="Type reply..." class="w-full b-input rounded-lg p-2 text-xs mb-2"></textarea>
-                            <button onclick="adminReplyTicket(${t.id})" class="w-full bg-[#0ecb81] text-black font-bold py-2 text-xs rounded-lg">Send Reply</button>
+                            <textarea id="reply-${t.id}" rows="2" placeholder="Type reply..." class="w-full b-input rounded-lg p-2 text-xs mb-2 focus:outline-none focus:ring-1 focus:ring-[#0ecb81]"></textarea>
+                            <button onclick="adminReplyTicket(${t.id})" class="w-full bg-[#0ecb81] text-black font-bold py-2 text-xs rounded-lg hover:bg-green-500">Send Reply</button>
                         ` : `
-                            <div class="text-xs text-[#848e9c] p-2 bg-[#2b3139] rounded-lg">Replied: ${t.reply}</div>
+                            <div class="text-xs text-[#848e9c] p-2 bg-[#2b3139] rounded-lg border-l-2 border-[#0ecb81]">Replied: ${t.reply}</div>
                         `}
                     </div>
                 `;
@@ -842,9 +829,6 @@
             renderList(); 
         }
 
-        function openSettingsModal() { elements.settingsModal.classList.remove('hidden'); }
-        function closeSettingsModal() { elements.settingsModal.classList.add('hidden'); }
-
         function copyAddress(text, btn) {
             navigator.clipboard.writeText(text);
             const icon = btn.querySelector('.copy-icon');
@@ -872,36 +856,28 @@
             document.getElementById('tradingview_container').innerHTML = '';
         }
 
-        function changeTimeframe(tf) {
-            currentTimeframe = tf;
-            document.getElementById('tf1h').className = tf === '60' ? "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors" : "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
-            document.getElementById('tf3h').className = tf === '180' ? "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors" : "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
-            loadTradingViewChart();
-        }
-
         function loadTradingViewChart() {
             document.getElementById('tradingview_container').innerHTML = '';
             new TradingView.widget({
                 "autosize": true,
                 "symbol": "BINANCE:" + currentSelectedSymbol,
-                "interval": currentTimeframe,
+                "interval": "60",
                 "timezone": "Etc/UTC",
-                "theme": isLightMode ? "light" : "dark",
+                "theme": "dark",
                 "style": "1",
                 "locale": "en",
                 "enable_publishing": false,
-                "backgroundColor": isLightMode ? "#f3f4f6" : "#0b0e11",
-                "gridColor": isLightMode ? "#e5e7eb" : "#1f2937",
-                "hide_top_toolbar": false, // تولبار بالایی مجددا فعال شد
-                "hide_legend": false,      // لجند مجددا فعال شد
+                "backgroundColor": "#0b0e11",
+                "gridColor": "#1f2937",
+                "hide_top_toolbar": false,
+                "hide_legend": false,
                 "save_image": true,
-                "allow_symbol_change": true, // قابلیت تغییر ارز مستقیما از چارت فعال شد
-                "details": true,             // جزئیات بیشتر چارت
+                "allow_symbol_change": true,
+                "details": true,
                 "container_id": "tradingview_container"
             });
         }
 
-        applyTheme();
         fetchInitialData();
 
     </script>
