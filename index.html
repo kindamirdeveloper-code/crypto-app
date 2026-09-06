@@ -647,29 +647,42 @@
             }
         }
 
-        function switchSupportSection(section) {
-            document.getElementById('supportTicketingSection').classList.add('hidden');
-            document.getElementById('supportDonateSection').classList.add('hidden');
-            document.getElementById('supportAdminSection').classList.add('hidden');
-            
-            document.getElementById('subBtnTicketing').className = "flex-1 py-2 text-sm font-bold rounded-lg text-[#848e9c] hover:text-white transition-colors";
-            document.getElementById('subBtnDonate').className = "flex-1 py-2 text-sm font-bold rounded-lg text-[#848e9c] hover:text-white transition-colors";
-            document.getElementById('subBtnAdmin').className = "hidden flex-1 py-2 text-sm font-bold rounded-lg text-[#f6465d] hover:text-white transition-colors";
-            
-            if (CURRENT_USER_ID === ADMIN_ID) {
-                document.getElementById('subBtnAdmin').classList.remove('hidden');
-            }
+        async function renderAdminUsers() {
+    const list = document.getElementById('adminUsersList');
+    if (!list) return;
+    
+    list.innerHTML = '<p class="text-xs text-[#848e9c] text-center">Loading users...</p>';
+    
+    try {
+        const response = await fetch('/api/get_users');
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.users) {
+            list.innerHTML = '';
+            const totalCountEl = document.getElementById('totalUsersCount');
+            if (totalCountEl) totalCountEl.innerText = `${data.users.length} Users`;
 
-            if (section === 'ticketing') {
-                document.getElementById('supportTicketingSection').classList.remove('hidden');
-                document.getElementById('subBtnTicketing').className = "flex-1 py-2 text-sm font-bold rounded-lg bg-[#fcd535] text-black transition-colors";
-            } else if (section === 'donate') {
-                document.getElementById('supportDonateSection').classList.remove('hidden');
-                document.getElementById('subBtnDonate').className = "flex-1 py-2 text-sm font-bold rounded-lg bg-[#fcd535] text-black transition-colors";
-            } else if (section === 'admin') {
-                document.getElementById('supportAdminSection').classList.remove('hidden');
-                document.getElementById('subBtnAdmin').className = "flex-1 py-2 text-sm font-bold rounded-lg bg-[#f6465d] text-white transition-colors";
-                switchAdminTab('tickets');
+            data.users.forEach(u => {
+                list.innerHTML += `
+                    <div onclick="window.location.href='tg://user?id=${u.user_id}'" class="b-card p-3 rounded-xl border border-[#2b3139] flex justify-between items-center cursor-pointer hover:bg-[#2b3139]/50 transition-colors">
+                        <div class="flex items-center space-x-3 pointer-events-none">
+                            <div class="w-10 h-10 rounded-full bg-[#2b3139] flex items-center justify-center text-white font-bold text-sm">${(u.first_name || 'U').charAt(0)}</div>
+                            <div>
+                                <div class="font-bold text-white text-sm">${u.first_name || 'User'} <span class="text-[10px] text-[#848e9c] font-normal ml-1">ID: ${u.user_id}</span></div>
+                                <div class="text-[10px] text-[#848e9c] mt-0.5">Sessions: <span class="text-white">${u.session_count}</span> | Last: ${u.last_seen}</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded bg-[#0ecb81]/20 text-[#0ecb81] pointer-events-none">REAL</span>
+                    </div>
+                `;
+            });
+        }
+    } catch (e) {
+        console.error("Failed to fetch real users:", e);
+        list.innerHTML = '<p class="text-xs text-[#f6465d] text-center">Failed to load real users.</p>';
+    }
+}
+
             }
         }
 
