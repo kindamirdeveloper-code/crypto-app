@@ -1,859 +1,412 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Binance Mini App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #0b0e11; 
-            color: #eaecef; 
-            -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        body.rtl { direction: rtl; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .binance-spinner {
-            border: 3px solid rgba(252, 213, 53, 0.1);
-            border-top-color: #fcd535;
-            border-radius: 50%;
-            width: 44px; height: 44px;
-            animation: spin 0.8s linear infinite !important;
-        }
-        .text-binance-yellow { color: #fcd535; }
-        .bg-binance-yellow { background-color: #fcd535; }
-        .b-card { background-color: #181a20; }
-        .b-input { background-color: #2b3139; color: #eaecef; }
-        .b-input::placeholder { color: #848e9c; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Crypto Mini App & Support</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #2563eb;
+      --accent-hover: #1d4ed8;
+      --text-color: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --success-color: #10b981;
+    }
 
-        @keyframes flashGreen {
-            0% { color: #0ecb81; text-shadow: 0 0 10px rgba(14, 203, 129, 0.5); transform: scale(1.02); }
-            100% { color: inherit; text-shadow: none; transform: scale(1); }
-        }
-        @keyframes flashRed {
-            0% { color: #f6465d; text-shadow: 0 0 10px rgba(246, 70, 93, 0.5); transform: scale(1.02); }
-            100% { color: inherit; text-shadow: none; transform: scale(1); }
-        }
-        .flash-up { animation: flashGreen 0.6s ease-out; color: #0ecb81 !important; font-weight: 600; }
-        .flash-down { animation: flashRed 0.6s ease-out; color: #f6465d !important; font-weight: 600; }
-        @keyframes pulse-live { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
-        .live-dot { animation: pulse-live 1.5s infinite; }
-        .nav-pill { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-text { transition: max-width 0.3s ease, opacity 0.3s ease; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      user-select: none;
+    }
 
-        /* Light Theme Overrides */
-        body.light-theme { background-color: #f3f4f6 !important; color: #111827 !important; }
-        body.light-theme .bg-\[\#0b0e11\] { background-color: #f3f4f6 !important; }
-        body.light-theme .bg-\[\#0b0e11\]\/95 { background-color: rgba(243, 244, 246, 0.95) !important; }
-        body.light-theme .bg-\[\#181a20\] { background-color: #ffffff !important; }
-        body.light-theme .bg-\[\#2b3139\] { background-color: #e5e7eb !important; color: #111827 !important; }
-        body.light-theme .text-white { color: #111827 !important; }
-        body.light-theme .text-\[\#848e9c\] { color: #6b7280 !important; }
-        body.light-theme .border-\[\#2b3139\] { border-color: #d1d5db !important; }
-        body.light-theme .hover\:bg-\[\#2b3139\]\/50:hover { background-color: #e5e7eb !important; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 70px;
+    }
 
-        .toast-enter { transform: translateY(0); opacity: 1; }
-        .toast-exit { transform: translateY(-150%); opacity: 0; }
-    </style>
+    /* Container & Header */
+    .container {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .app-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Bottom Navigation Bar */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid var(--border-color);
+      z-index: 1000;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      width: 25%;
+      transition: color 0.2s;
+    }
+
+    .nav-btn i {
+      font-size: 1.25rem;
+    }
+
+    .nav-btn.active {
+      color: #38bdf8;
+    }
+
+    /* Tab Content Handling */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Card Layout */
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 18px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+
+    /* Support Tab Styling */
+    .support-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .support-header i {
+      font-size: 2.8rem;
+      color: #38bdf8;
+      margin-bottom: 10px;
+    }
+
+    .support-header h2 {
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+    }
+
+    .support-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-color);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-color);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 20px 0;
+    }
+
+    .direct-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .direct-link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 0.88rem;
+      border: 1px solid var(--border-color);
+      transition: background 0.2s;
+    }
+
+    .direct-link-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Notification Alert */
+    .alert-success {
+      display: none;
+      padding: 12px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success-color);
+      color: var(--success-color);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+  </style>
 </head>
-<body class="min-h-screen pb-24 selection:bg-[#fcd535] selection:text-black">
+<body>
 
-    <div id="loadingScreen" class="fixed inset-0 bg-[#0b0e11] z-50 flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="binance-spinner mb-5"></div>
-        <div class="text-[#fcd535] text-lg font-bold tracking-[0.2em] ml-2">BINANCE</div>
+  <div class="container">
+    <div class="app-header">
+      <div class="app-title">
+        <i class="fas fa-cubes"></i>
+        <span>دستیار ارز دیجیتال</span>
+      </div>
+      <div id="userInfo" style="font-size: 0.85rem; color: var(--text-muted);"></div>
     </div>
 
-    <div id="alertToast" class="fixed top-4 left-4 right-4 z-[80] bg-[#181a20] border-l-4 border-[#fcd535] p-4 rounded-xl shadow-2xl transition-all duration-500 toast-exit flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="bg-[#fcd535]/20 p-2 rounded-full"><svg class="w-6 h-6 text-[#fcd535]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg></div>
-            <div>
-                <h4 class="text-white font-bold text-sm" id="toastTitle">Price Alert Triggered!</h4>
-                <p id="toastMsg" class="text-xs text-[#848e9c] mt-0.5">BTC has reached your target.</p>
-            </div>
-        </div>
-        <button onclick="closeToast()" class="text-[#848e9c]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+    <!-- تب ۱: بازار و نمودار -->
+    <div id="tab-market" class="tab-content active">
+      <div class="card">
+        <h3><i class="fas fa-chart-line"></i> تحلیل و قیمت لحظه‌ای</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+          نمودارها و ابزارهای تحلیلی بازار ارزهای دیجیتال در این بخش قرار دارند.
+        </p>
+      </div>
     </div>
 
-    <div class="max-w-md mx-auto w-full">
-
-        <div id="pricesTab" class="w-full">
-            <div class="sticky top-0 z-30 bg-[#0b0e11]/95 backdrop-blur-md pt-5 pb-3 px-4 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <h1 class="text-xl font-bold text-white" data-i18n="homeTitle">Home</h1>
-                    <div class="flex items-center space-x-1.5 bg-[#2b3139] px-2 py-1 rounded-md">
-                        <div class="w-1.5 h-1.5 rounded-full bg-[#0ecb81] live-dot"></div>
-                        <span class="text-[10px] font-semibold text-[#848e9c] uppercase tracking-wider">Live</span>
-                    </div>
-                </div>
-                <div class="flex space-x-2">
-                    <button onclick="openSettingsModal()" class="p-2 bg-[#181a20] rounded-xl text-[#848e9c] hover:text-[#fcd535] transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    </button>
-                    <button onclick="manualRefresh()" class="p-2 bg-[#181a20] rounded-xl text-[#848e9c] hover:text-white transition-colors">
-                        <svg id="refreshIcon" class="w-5 h-5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="px-4 mb-3">
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#848e9c]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </span>
-                    <input type="text" id="searchInput" placeholder="Search coin..." data-i18n-placeholder="searchPlaceholder" class="w-full b-input rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#fcd535] transition-all">
-                </div>
-            </div>
-
-            <div class="flex space-x-5 px-4 mb-3 overflow-x-auto pb-1 scrollbar-hide text-sm font-medium border-b border-[#2b3139]">
-                <button onclick="setCategory('all')" id="cat-all" class="cat-btn text-[#fcd535] border-b-2 border-[#fcd535] pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="allMarkets">All Markets</button>
-                <button onclick="setCategory('trending')" id="cat-trending" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="trending">
-                    <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.56 10.59c-.49-.78-1.12-1.48-1.85-2.06-.51-.4-1.07-.75-1.68-1.04.14-.65.22-1.33.22-2.03 0-.37-.04-.73-.11-1.09C13.68 3.57 12.87 3 12 3c-.87 0-1.68.57-1.94 1.37-.07.36-.11.72-.11 1.09 0 .7.08 1.38.22 2.03-.61.29-1.17.64-1.68 1.04-.73.58-1.36 1.28-1.85 2.06C6.27 12.11 6 13.79 6 15.5 6 18.99 8.69 22 12 22s6-3.01 6-6.5c0-1.71-.27-3.39-.44-4.41z"/></svg> Trending
-                </button>
-                <button onclick="setCategory('gainers')" id="cat-gainers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="gainers">
-                    <svg class="w-4 h-4 text-[#0ecb81]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg> Gainers
-                </button>
-                <button onclick="setCategory('losers')" id="cat-losers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="losers">
-                    <svg class="w-4 h-4 text-[#f6465d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path></svg> Losers
-                </button>
-            </div>
-
-            <div class="flex justify-between px-5 mb-2 text-[11px] font-medium text-[#848e9c]">
-                <span data-i18n="nameHeader">Name</span>
-                <span data-i18n="priceHeader">Last Price</span>
-            </div>
-
-            <div id="cryptoList" class="px-2 space-y-1"></div>
-        </div>
-
-        <div id="watchlistTab" class="w-full hidden">
-            <div class="sticky top-0 z-30 bg-[#0b0e11]/95 backdrop-blur-md pt-5 pb-3 px-4 flex items-center justify-between border-b border-[#2b3139]">
-                <h1 class="text-xl font-bold text-white" data-i18n="watchlistTitle">Watchlist & Alerts</h1>
-                <button onclick="openAlertModal()" class="px-3 py-1.5 bg-[#fcd535] text-black rounded-lg text-xs font-bold shadow-md hover:bg-yellow-400 transition-colors" data-i18n="addAlertBtn">+ Add Alert</button>
-            </div>
-            <div class="px-4 py-4 space-y-6">
-                <div>
-                    <h3 class="text-sm font-bold text-[#848e9c] uppercase tracking-wider mb-3" data-i18n="favoriteCoinsHeader">Favorite Markets</h3>
-                    <div id="favoriteCoinsList" class="space-y-1"></div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-sm font-bold text-[#848e9c] uppercase tracking-wider" data-i18n="priceAlertsHeader">Price Alerts</h3>
-                    </div>
-                    <div id="alertsList" class="space-y-3"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="donateTab" class="w-full hidden pt-10 px-4">
-            <div class="b-card rounded-2xl p-6 text-center shadow-lg border border-[#2b3139]">
-                <div class="w-16 h-16 mx-auto mb-4 bg-[#26A17B]/10 rounded-full flex items-center justify-center">
-                    <svg class="w-10 h-10 text-[#26A17B]" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M11.944 14.86c-4.484 0-8.243-1.047-8.243-2.338 0-1.29 3.76-2.337 8.243-2.337s8.242 1.047 8.242 2.337c0 1.29-3.758 2.338-8.242 2.338zM12.057 9.38v-3.79h3.693V2.42H8.384v3.17h3.673v3.79c-4.966.173-9.056 1.455-9.056 3.012 0 1.637 4.542 2.966 10.144 2.966 5.6 0 10.142-1.33 10.142-2.966 0-1.558-4.092-2.84-9.058-3.013H12.057v7.502c-1.393-.11-2.67-.327-3.673-.61v3.313c1.233.393 2.68.653 4.153.653 1.22 0 2.457-.183 3.695-.533v-3.23c-1.258.336-2.735.59-4.172.637v-7.533z"/>
-                    </svg>
-                </div>
-                <h2 class="text-lg font-bold text-white mb-1" data-i18n="supportTitle">Support the Project</h2>
-                <p class="text-sm text-[#848e9c] mb-6" data-i18n="supportDesc">Your contributions help us maintain and improve this service.</p>
-                <div class="space-y-3">
-                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (TRC20)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L</span>
-                            <button onclick="copyAddress('TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
-                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f</span>
-                            <button onclick="copyAddress('0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
-                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex space-x-2 mt-4">
-                    <a href="https://t.me/GreedDropBot?start=8443620164" target="_blank" class="flex-1 bg-[#2b3139] text-white font-bold py-3 rounded-xl hover:bg-[#363d47] transition-colors text-center text-sm">Join1</a>
-                    <a href="https://t.me/RubyEarn_Bot/myapp?startapp=8443620164" target="_blank" class="flex-1 bg-[#fcd535] text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors text-center text-sm">Join2</a>
-                </div>
-            </div>
-        </div>
-
+    <!-- تب ۲: هوش مصنوعی / ابزارها -->
+    <div id="tab-ai" class="tab-content">
+      <div class="card">
+        <h3><i class="fas fa-robot"></i> دستیار هوشمند</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+          سوالات خود را از دستیار هوشمند بپرسید.
+        </p>
+      </div>
     </div>
 
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 z-[70] hidden flex-col justify-end transition-opacity">
-        <div class="bg-[#181a20] w-full rounded-t-3xl p-6 border-t border-[#2b3139] shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-white font-bold text-lg" data-i18n="settingsTitle">Settings</h3>
-                <button onclick="closeSettingsModal()" class="text-[#848e9c] p-1 bg-[#2b3139] rounded-full hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="space-y-5">
-                <div class="flex items-center justify-between py-2 border-b border-[#2b3139]">
-                    <span class="text-sm font-semibold text-white" data-i18n="themeLabel">Appearance Theme</span>
-                    <div class="flex space-x-2 bg-[#2b3139] p-1 rounded-xl">
-                        <button onclick="setTheme('dark')" id="themeDarkBtn" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black">Dark</button>
-                        <button onclick="setTheme('light')" id="themeLightBtn" class="px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]">Light</button>
-                    </div>
-                </div>
-            </div>
+    <!-- تب ۳: پشتیبانی و تیکتینگ (جایگزین تب دونیت) -->
+    <div id="tab-support" class="tab-content">
+      <div class="card">
+        <div class="support-header">
+          <i class="fas fa-headset"></i>
+          <h2>پشتیبانی و ارسال تیکت</h2>
+          <p>در صورت داشتن سوال، مشکل یا پیشنهاد، فرم زیر را تکمیل کنید تا کارشناسان ما پاسخگوی شما باشند.</p>
         </div>
+
+        <div id="ticketAlert" class="alert-success">
+          <i class="fas fa-check-circle"></i> تیکت شما با موفقیت ارسال شد و به زودی بررسی می‌شود.
+        </div>
+
+        <form id="ticketForm" onsubmit="submitTicket(event)">
+          <div class="form-group">
+            <label for="ticketCategory">بخش مربوطه</label>
+            <select id="ticketCategory" class="form-control">
+              <option value="عمومی">پشتیبانی عمومی</option>
+              <option value="فنی">مشکلات فنی</option>
+              <option value="مالی">امور مالی و ارتقا</option>
+              <option value="گزارش باگ">گزارش باگ / پیشنهاد</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ticketSubject">موضوع تیکت</label>
+            <input type="text" id="ticketSubject" class="form-control" placeholder="عنوان کوتاه مشکل یا درخواست..." required />
+          </div>
+
+          <div class="form-group">
+            <label for="ticketMessage">متن پیام</label>
+            <textarea id="ticketMessage" class="form-control" placeholder="توضیحات کامل پیام خود را بنویسید..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-paper-plane"></i> ارسال تیکت
+          </button>
+        </form>
+
+        <hr class="divider" />
+
+        <div class="direct-links">
+          <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 6px;">
+            ارتباط مستقیم و کانال اطلاع‌رسانی:
+          </p>
+          <a href="https://t.me/your_admin_id" target="_blank" class="direct-link-btn">
+            <i class="fab fa-telegram-plane" style="color: #38bdf8;"></i> پیام مستقیم به ادمین در تلگرام
+          </a>
+        </div>
+      </div>
     </div>
 
-    <div id="alertModal" class="fixed inset-0 bg-black/80 z-[70] hidden flex-col justify-end transition-opacity">
-        <div class="bg-[#181a20] w-full h-[80vh] rounded-t-3xl p-6 border-t border-[#2b3139] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-white font-bold text-lg" data-i18n="createAlertTitle">Create Price Alert</h3>
-                <button onclick="closeAlertModal()" class="text-[#848e9c] p-1 bg-[#2b3139] rounded-full hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-
-            <div class="space-y-4 flex-1 flex flex-col overflow-hidden">
-                <div>
-                    <label class="text-xs font-semibold text-[#848e9c] mb-1.5 block uppercase tracking-wider" data-i18n="selectCoinLabel">Select Coin</label>
-                    <input type="text" id="alertCoinSearch" placeholder="Search coin..." oninput="filterAlertCoins()" class="w-full b-input rounded-xl px-4 py-2.5 text-sm mb-2 focus:outline-none focus:ring-1 focus:ring-[#fcd535]">
-                    <div id="alertCoinListContainer" class="max-h-40 overflow-y-auto space-y-1 bg-[#0b0e11] p-2 rounded-xl border border-[#2b3139] scrollbar-hide"></div>
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-[#848e9c] mb-1.5 flex justify-between uppercase tracking-wider">
-                        <span data-i18n="targetPriceLabel">Target Price (USDT)</span>
-                        <span id="alertCurrentPriceHint" class="text-[#0ecb81]"></span>
-                    </label>
-                    <input type="number" id="alertPriceInput" step="any" placeholder="e.g. 65000" class="w-full b-input rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#fcd535]">
-                </div>
-                <button onclick="saveNewAlert()" class="w-full bg-[#fcd535] text-black font-bold py-3.5 rounded-xl hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/20 mt-auto" data-i18n="setAlertBtn">Set Alert</button>
-            </div>
-        </div>
+    <!-- تب ۴: پروفایل -->
+    <div id="tab-profile" class="tab-content">
+      <div class="card">
+        <h3><i class="fas fa-user"></i> حساب کاربری</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+          اطلاعات کاربری و تنظیمات ربات.
+        </p>
+      </div>
     </div>
-
-    <div id="chartModal" class="fixed inset-0 bg-[#0b0e11] z-50 hidden flex flex-col">
-        <div class="flex items-center justify-between px-4 py-3 bg-[#181a20] border-b border-[#2b3139]">
-            <div class="flex items-center space-x-2">
-                <button onclick="closeChartModal()" class="p-1 rounded-lg text-[#848e9c] hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <span id="modalCoinTitle" class="font-bold text-white text-lg">BTC/USDT</span>
-            </div>
-            <div class="flex space-x-1 bg-[#2b3139] p-1 rounded-lg">
-                <button id="tf1h" onclick="changeTimeframe('60')" class="px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors">1H</button>
-                <button id="tf3h" onclick="changeTimeframe('180')" class="px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors">3H</button>
-            </div>
-        </div>
-        <div class="flex-1 w-full bg-[#0b0e11] relative" id="tradingview_container"></div>
-    </div>
-
-    <div class="fixed bottom-0 w-full bg-[#181a20] border-t border-[#2b3139] z-40 pb-safe">
-        <div class="flex justify-around items-center px-2 py-2 max-w-md mx-auto">
-            <button onclick="switchTab('prices')" id="btnPrices" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl bg-[#2b3139] text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span id="textPrices" class="text-sm font-semibold nav-text opacity-100" data-i18n="navHome">Home</span>
-            </button>
-
-            <button onclick="switchTab('watchlist')" id="btnWatchlist" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl text-[#848e9c] bg-transparent">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
-                <span id="textWatchlist" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden" data-i18n="navWatchlist">Watchlist</span>
-            </button>
-
-            <button onclick="switchTab('donate')" id="btnDonate" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl text-[#848e9c] bg-transparent">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                <span id="textDonate" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden" data-i18n="navDonate">Donate</span>
-            </button>
-        </div>
-    </div>
-
-    <script>
-        const tg = window.Telegram?.WebApp;
-        if(tg) { tg.expand(); }
-
-        const translations = {
-            en: {
-                homeTitle: "Home",
-                searchPlaceholder: "Search coin...",
-                allMarkets: "All Markets",
-                trending: "Trending",
-                gainers: "Gainers",
-                losers: "Losers",
-                nameHeader: "Name",
-                priceHeader: "Last Price",
-                watchlistTitle: "Watchlist & Alerts",
-                addAlertBtn: "+ Add Alert",
-                favoriteCoinsHeader: "Favorite Markets",
-                priceAlertsHeader: "Price Alerts",
-                supportTitle: "Support the Project",
-                supportDesc: "Your contributions help us maintain and improve this service.",
-                settingsTitle: "Settings",
-                themeLabel: "Appearance Theme",
-                createAlertTitle: "Create Price Alert",
-                selectCoinLabel: "Select Coin",
-                targetPriceLabel: "Target Price (USDT)",
-                setAlertBtn: "Set Alert",
-                navHome: "Home",
-                navWatchlist: "Watchlist",
-                navDonate: "Donate",
-                alertTriggeredTitle: "Price Alert Triggered!"
-            }
-        };
-
-        let allCoins = [];
-        let previousPrices = {};
-        let isAppReady = false;
-        let currentSelectedSymbol = 'BTCUSDT';
-        let currentTimeframe = '60';
-        let currentCategory = 'all';
-        let selectedAlertSymbol = 'BTCUSDT';
-
-        let userAlerts = JSON.parse(localStorage.getItem('binance_bot_alerts')) || [];
-        let favoriteCoins = JSON.parse(localStorage.getItem('binance_favorites')) || ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT'];
-        let isLightMode = localStorage.getItem('app_theme') === 'light';
-        let currentLang = 'en';
-
-        if(isLightMode) { document.body.classList.add('light-theme'); }
-        updateLanguageUI();
-
-        function setTheme(theme) {
-            isLightMode = (theme === 'light');
-            if (isLightMode) {
-                document.body.classList.add('light-theme');
-                localStorage.setItem('app_theme', 'light');
-            } else {
-                document.body.classList.remove('light-theme');
-                localStorage.setItem('app_theme', 'dark');
-            }
-            updateSettingsButtons();
-        }
-
-        function updateLanguageUI() {
-            const dict = translations[currentLang];
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
-            });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if(dict[key]) el.placeholder = dict[key];
-            });
-        }
-
-        function updateSettingsButtons() {
-            const darkBtn = document.getElementById('themeDarkBtn');
-            const lightBtn = document.getElementById('themeLightBtn');
-            if(isLightMode) {
-                lightBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
-                darkBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
-            } else {
-                darkBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
-                lightBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
-            }
-        }
-
-        function openSettingsModal() {
-            updateSettingsButtons();
-            const modal = document.getElementById('settingsModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function formatPrice(price) {
-            if (price < 0.0001) return price.toFixed(6);
-            if (price < 1) return price.toFixed(4);
-            if (price < 10) return price.toFixed(3);
-            return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        async function initApp() {
-            await fetchBinancePrices();
-            renderWatchlistTab();
-            const loader = document.getElementById('loadingScreen');
-            if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    isAppReady = true;
-                }, 300);
-            }
-        }
-
-        async function fetchBinancePrices() {
-            try {
-                let response;
-                try {
-                    response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
-                    if (!response.ok) throw new Error();
-                } catch (e) {
-                    response = await fetch('https://data-api.binance.vision/api/v3/ticker/24hr');
-                }
-
-                const data = await response.json();
-
-                const usdtPairs = data.filter(item => 
-                    item.symbol.endsWith('USDT') && 
-                    !item.symbol.includes('UP') && 
-                    !item.symbol.includes('DOWN') && 
-                    !item.symbol.includes('BULL') && 
-                    !item.symbol.includes('BEAR')
-                );
-
-                usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
-
-                let formattedData = usdtPairs.slice(0, 100).map(item => {
-                    const symbolClean = item.symbol.replace('USDT', '');
-                    const current = parseFloat(item.lastPrice);
-                    return {
-                        symbol: item.symbol,
-                        symbolClean: symbolClean,
-                        fullName: symbolClean,
-                        price: current,
-                        change24h: parseFloat(item.priceChangePercent || 0),
-                        quoteVolume: parseFloat(item.quoteVolume || 0)
-                    };
-                });
-
-                formattedData.forEach(item => {
-                    const current = item.price;
-                    if (previousPrices[item.symbol] !== undefined) {
-                        if (current > previousPrices[item.symbol]) item.flash = 'flash-up';
-                        else if (current < previousPrices[item.symbol]) item.flash = 'flash-down';
-                        else item.flash = '';
-                    } else {
-                        item.flash = '';
-                    }
-                    previousPrices[item.symbol] = current;
-                });
-
-                allCoins = formattedData;
-                renderList(allCoins);
-                if(!document.getElementById('watchlistTab').classList.contains('hidden')) {
-                    renderWatchlistTab();
-                }
-                checkPriceAlerts();
-            } catch (error) {
-                console.error("Error loading Binance data:", error);
-            }
-        }
-
-        function toggleFavorite(symbol, event) {
-            event.stopPropagation();
-            if(favoriteCoins.includes(symbol)) {
-                favoriteCoins = favoriteCoins.filter(s => s !== symbol);
-            } else {
-                favoriteCoins.push(symbol);
-            }
-            localStorage.setItem('binance_favorites', JSON.stringify(favoriteCoins));
-            renderList(allCoins);
-            if(!document.getElementById('watchlistTab').classList.contains('hidden')) {
-                renderWatchlistTab();
-            }
-        }
-
-        function renderWatchlistTab() {
-            renderFavoriteCoinsList();
-            renderAlertsList();
-        }
-
-        function renderFavoriteCoinsList() {
-            const container = document.getElementById('favoriteCoinsList');
-            const favs = allCoins.filter(c => favoriteCoins.includes(c.symbol));
-
-            if(favs.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 bg-[#181a20] rounded-xl border border-[#2b3139]"><p class="text-[#848e9c] text-xs">No favorite coins added yet.</p></div>`;
-                return;
-            }
-
-            let html = '';
-            favs.forEach(coin => {
-                const isPositive = coin.change24h >= 0;
-                const changeBg = isPositive ? 'bg-[#0ecb81]' : 'bg-[#f6465d]';
-                const changeSign = isPositive ? '+' : '';
-                const iconUrl = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${coin.symbolClean.toLowerCase()}.svg`;
-
-                html += `
-                    <div class="flex items-center justify-between py-3 px-3 rounded-xl bg-[#181a20] border border-[#2b3139] mb-1.5 cursor-pointer hover:bg-[#2b3139]/50 transition-colors" onclick="openChart('${coin.symbol}')">
-                        <div class="flex items-center space-x-3">
-                            <button onclick="toggleFavorite('${coin.symbol}', event)" class="text-[#fcd535] mr-1">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                            </button>
-                            <img src="${iconUrl}" onerror="this.outerHTML='<div class=\\'w-8 h-8 rounded-full bg-[#2b3139] flex items-center justify-center font-bold text-xs text-[#fcd535]\\'>${coin.symbolClean.charAt(0)}</div>'" class="w-7 h-7 rounded-full" alt="${coin.symbolClean}">
-                            <div class="flex flex-col">
-                                <span class="font-bold text-white text-sm leading-tight">${coin.symbolClean}</span>
-                                <span class="text-[11px] text-[#848e9c]">USDT</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-end">
-                            <span class="font-semibold text-white text-sm leading-tight ${coin.flash}">
-                                $${formatPrice(coin.price)}
-                            </span>
-                            <span class="text-[11px] font-medium text-white px-1.5 py-0.5 rounded mt-1 ${changeBg}">
-                                ${changeSign}${coin.change24h.toFixed(2)}%
-                            </span>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function openAlertModal() {
-            selectedAlertSymbol = allCoins.length > 0 ? allCoins[0].symbol : 'BTCUSDT';
-            document.getElementById('alertCoinSearch').value = '';
-            document.getElementById('alertPriceInput').value = '';
-            renderCustomCoinList('');
-
-            const modal = document.getElementById('alertModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeAlertModal() {
-            const modal = document.getElementById('alertModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function filterAlertCoins() {
-            const query = document.getElementById('alertCoinSearch').value.toLowerCase();
-            renderCustomCoinList(query);
-        }
-
-        function renderCustomCoinList(query) {
-            const container = document.getElementById('alertCoinListContainer');
-            const filtered = allCoins.filter(c => c.symbolClean.toLowerCase().includes(query));
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-4 text-[#848e9c] text-xs">No coins found</div>`;
-                return;
-            }
-
-            let html = '';
-            filtered.forEach(coin => {
-                const isSelected = coin.symbol === selectedAlertSymbol;
-                const bgClass = isSelected ? 'bg-[#2b3139] border-[#fcd535]' : 'bg-transparent border-transparent';
-                html += `
-                    <div onclick="selectAlertCoin('${coin.symbol}')" class="flex items-center justify-between p-2.5 rounded-lg border cursor-pointer hover:bg-[#2b3139]/50 transition-colors ${bgClass}">
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-white text-sm">${coin.symbolClean} / USDT</span>
-                        </div>
-                        <span class="text-xs text-[#848e9c]">$${formatPrice(coin.price)}</span>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function selectAlertCoin(symbol) {
-            selectedAlertSymbol = symbol;
-            const c = allCoins.find(x => x.symbol === symbol);
-            if(c) {
-                document.getElementById('alertCurrentPriceHint').innerText = `Current: $${formatPrice(c.price)}`;
-            }
-            filterAlertCoins();
-        }
-
-        function saveNewAlert() {
-            const targetPrice = parseFloat(document.getElementById('alertPriceInput').value);
-
-            if(!targetPrice || targetPrice <= 0) {
-                alert('Please enter a valid target price.');
-                return;
-            }
-
-            const coin = allCoins.find(c => c.symbol === selectedAlertSymbol);
-            if(!coin) return;
-
-            const condition = targetPrice > coin.price ? 'UP' : 'DOWN';
-
-            const newAlert = {
-                id: Date.now().toString(),
-                symbol: selectedAlertSymbol,
-                symbolClean: coin.symbolClean,
-                targetPrice: targetPrice,
-                condition: condition,
-                active: true
-            };
-
-            userAlerts.push(newAlert);
-            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
-
-            closeAlertModal();
-            renderWatchlistTab();
-        }
-
-        function deleteAlert(id) {
-            userAlerts = userAlerts.filter(a => a.id !== id);
-            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
-            renderWatchlistTab();
-        }
-
-        function renderAlertsList() {
-            const container = document.getElementById('alertsList');
-            if(userAlerts.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 bg-[#181a20] rounded-xl border border-[#2b3139]"><p class="text-[#848e9c] text-xs">No price alerts set yet.</p></div>`;
-                return;
-            }
-
-            let html = '';
-            userAlerts.forEach(alert => {
-                const coin = allCoins.find(c => c.symbol === alert.symbol);
-                const currentPrice = coin ? formatPrice(coin.price) : '...';
-                const statusColor = alert.active ? 'text-[#fcd535]' : 'text-[#848e9c]';
-                const statusText = alert.active ? 'Active' : 'Triggered';
-
-                html += `
-                    <div class="flex items-center justify-between p-3.5 bg-[#181a20] rounded-xl border border-[#2b3139]">
-                        <div>
-                            <div class="flex items-center space-x-2 mb-1">
-                                <span class="font-bold text-white text-sm">${alert.symbolClean}</span>
-                                <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#2b3139] ${statusColor}">${statusText}</span>
-                            </div>
-                            <div class="text-xs text-[#848e9c]">
-                                Target: <strong class="text-white">$${formatPrice(alert.targetPrice)}</strong>
-                                <span class="mx-1">•</span> Current: $${currentPrice}
-                            </div>
-                        </div>
-                        <button onclick="deleteAlert('${alert.id}')" class="p-2 bg-[#2b3139] text-[#f6465d] rounded-lg hover:bg-[#f6465d] hover:text-white transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function checkPriceAlerts() {
-            let triggeredAny = false;
-
-            userAlerts.forEach(alert => {
-                if(!alert.active) return;
-
-                const coin = allCoins.find(c => c.symbol === alert.symbol);
-                if(!coin) return;
-
-                let isTriggered = false;
-                if (alert.condition === 'UP' && coin.price >= alert.targetPrice) isTriggered = true;
-                if (alert.condition === 'DOWN' && coin.price <= alert.targetPrice) isTriggered = true;
-
-                if (isTriggered) {
-                    alert.active = false;
-                    triggeredAny = true;
-
-                    const msg = `⚠️ Alert: ${alert.symbolClean} has reached your target price of $${formatPrice(alert.targetPrice)}! Current: $${formatPrice(coin.price)}`;
-                    showToast(msg);
-                }
-            });
-
-            if(triggeredAny) {
-                localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
-                if(!document.getElementById('watchlistTab').classList.contains('hidden')) {
-                    renderWatchlistTab();
-                }
-            }
-        }
-
-        function showToast(message) {
-            document.getElementById('toastTitle').innerText = translations[currentLang].alertTriggeredTitle;
-            document.getElementById('toastMsg').innerText = message;
-            const toast = document.getElementById('alertToast');
-            toast.classList.remove('toast-exit');
-            toast.classList.add('toast-enter');
-            setTimeout(() => { closeToast(); }, 6000);
-        }
-
-        function closeToast() {
-            const toast = document.getElementById('alertToast');
-            toast.classList.remove('toast-enter');
-            toast.classList.add('toast-exit');
-        }
-
-        function setCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('text-[#fcd535]', 'border-[#fcd535]');
-                btn.classList.add('text-[#848e9c]', 'border-transparent');
-            });
-            const activeBtn = document.getElementById('cat-' + cat);
-            if(activeBtn) {
-                activeBtn.classList.remove('text-[#848e9c]', 'border-transparent');
-                activeBtn.classList.add('text-[#fcd535]', 'border-[#fcd535]');
-            }
-            renderList(allCoins);
-        }
-
-        function renderList(coins) {
-            const container = document.getElementById('cryptoList');
-            const searchInputElem = document.getElementById('searchInput');
-            const search = searchInputElem ? searchInputElem.value.toLowerCase() : '';
-            const focusedElementId = document.activeElement ? document.activeElement.id : '';
-
-            let filtered = coins.filter(c => c.symbolClean.toLowerCase().includes(search) || c.fullName.toLowerCase().includes(search));
-
-            if (currentCategory === 'trending') {
-                filtered = [...filtered].sort((a, b) => b.quoteVolume - a.quoteVolume).slice(0, 20);
-            } else if (currentCategory === 'gainers') {
-                filtered = [...filtered].sort((a, b) => b.change24h - a.change24h).slice(0, 20);
-            } else if (currentCategory === 'losers') {
-                filtered = [...filtered].sort((a, b) => a.change24h - b.change24h).slice(0, 20);
-            }
-
-            let htmlContent = '';
-            if (filtered.length === 0 && allCoins.length > 0) {
-                htmlContent = `<div class="text-center py-10 text-[#848e9c] text-sm">No coins found</div>`;
-            } else {
-                filtered.forEach(coin => {
-                    const isPositive = coin.change24h >= 0;
-                    const changeBg = isPositive ? 'bg-[#0ecb81]' : 'bg-[#f6465d]';
-                    const changeSign = isPositive ? '+' : '';
-                    const isFav = favoriteCoins.includes(coin.symbol);
-                    const favColor = isFav ? 'text-[#fcd535]' : 'text-[#848e9c] hover:text-white';
-                    const iconUrl = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${coin.symbolClean.toLowerCase()}.svg`;
-
-                    htmlContent += `
-                        <div onclick="openChart('${coin.symbol}')" class="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-[#2b3139]/50 transition-colors cursor-pointer">
-                            <div class="flex items-center space-x-3">
-                                <button onclick="toggleFavorite('${coin.symbol}', event)" class="${favColor} mr-0.5">
-                                    <svg class="w-5 h-5" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
-                                </button>
-                                <img src="${iconUrl}" onerror="this.outerHTML='<div class=\\'w-8 h-8 rounded-full bg-[#2b3139] flex items-center justify-center font-bold text-xs text-[#fcd535]\\'>${coin.symbolClean.charAt(0)}</div>'" class="w-8 h-8 rounded-full" alt="${coin.symbolClean}">
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-white text-[15px] leading-tight">${coin.symbolClean}</span>
-                                    <span class="text-xs text-[#848e9c] mt-0.5">${coin.fullName}</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="font-semibold text-white text-[15px] leading-tight transition-colors duration-300 ${coin.flash}">
-                                    $${formatPrice(coin.price)}
-                                </span>
-                                <span class="text-xs font-medium text-white px-1.5 py-0.5 rounded mt-1 ${changeBg}">
-                                    ${changeSign}${coin.change24h.toFixed(2)}%
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            container.innerHTML = htmlContent;
-            if (focusedElementId === 'searchInput') {
-                const input = document.getElementById('searchInput');
-                if(input) input.focus();
-            }
-        }
-
-        function openChart(symbol) {
-            currentSelectedSymbol = symbol;
-            document.getElementById('modalCoinTitle').innerText = symbol.replace('USDT', '/USDT');
-            document.getElementById('chartModal').classList.remove('hidden');
-            loadTradingViewChart(symbol, currentTimeframe);
-        }
-
-        function closeChartModal() {
-            document.getElementById('chartModal').classList.add('hidden');
-            document.getElementById('tradingview_container').innerHTML = '';
-        }
-
-        function changeTimeframe(tf) {
-            currentTimeframe = tf;
-            if(tf === '60') {
-                document.getElementById('tf1h').className = "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors";
-                document.getElementById('tf3h').className = "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
-            } else {
-                document.getElementById('tf3h').className = "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors";
-                document.getElementById('tf1h').className = "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
-            }
-            loadTradingViewChart(currentSelectedSymbol, currentTimeframe);
-        }
-
-        function loadTradingViewChart(symbol, timeframe) {
-            document.getElementById('tradingview_container').innerHTML = '';
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": "BINANCE:" + symbol,
-                "interval": timeframe,
-                "timezone": "Etc/UTC",
-                "theme": isLightMode ? "light" : "dark",
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": isLightMode ? "#ffffff" : "#181a20",
-                "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "save_image": false,
-                "container_id": "tradingview_container"
-            });
-        }
-
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) searchInput.addEventListener('input', () => renderList(allCoins));
-
-        function manualRefresh() {
-            const icon = document.getElementById('refreshIcon');
-            if(icon) icon.classList.add('rotate-180');
-            fetchBinancePrices().then(() => {
-                setTimeout(() => { if(icon) icon.classList.remove('rotate-180'); }, 500);
-            });
-        }
-
-        function switchTab(tab) {
-            const tabs = ['prices', 'watchlist', 'donate'];
-
-            tabs.forEach(t => {
-                const section = document.getElementById(t + 'Tab');
-                const btn = document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1));
-                const text = document.getElementById('text' + t.charAt(0).toUpperCase() + t.slice(1));
-
-                if (t === tab) {
-                    section.classList.remove('hidden');
-                    btn.classList.replace('bg-transparent', 'bg-[#2b3139]');
-                    btn.classList.replace('text-[#848e9c]', 'text-white');
-                    text.classList.remove('max-w-0', 'opacity-0');
-                    text.classList.add('opacity-100');
-                    if (tab === 'watchlist') renderWatchlistTab();
-                } else {
-                    section.classList.add('hidden');
-                    btn.classList.replace('bg-[#2b3139]', 'bg-transparent');
-                    btn.classList.replace('text-white', 'text-[#848e9c]');
-                    text.classList.remove('opacity-100');
-                    text.classList.add('max-w-0', 'opacity-0');
-                }
-            });
-        }
-
-        function copyAddress(text, btnElement) {
-            navigator.clipboard.writeText(text).then(() => {
-                const icon = btnElement.querySelector('.copy-icon');
-                if(icon) {
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
-                    icon.classList.add('text-[#0ecb81]');
-                    btnElement.classList.add('bg-[#0ecb81]/10');
-                    setTimeout(() => {
-                        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>`;
-                        icon.classList.remove('text-[#0ecb81]');
-                        btnElement.classList.remove('bg-[#0ecb81]/10');
-                    }, 2000);
-                }
-            });
-        }
-
-        initApp();
-
-        setInterval(() => {
-            if (isAppReady) fetchBinancePrices();
-        }, 3000);
-    </script>
+  </div>
+
+  <!-- منوی ناوبری پایین صفحه -->
+  <nav class="navbar">
+    <button class="nav-btn active" onclick="switchTab('market', this)">
+      <i class="fas fa-chart-line"></i>
+      <span>بازار</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('ai', this)">
+      <i class="fas fa-robot"></i>
+      <span>هوش مصنوعی</span>
+    </button>
+    <!-- تب پشتیبانی جایگزین دونیت با آیکون headset -->
+    <button class="nav-btn" onclick="switchTab('support', this)">
+      <i class="fas fa-headset"></i>
+      <span>پشتیبانی</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('profile', this)">
+      <i class="fas fa-user"></i>
+      <span>پروفایل</span>
+    </button>
+  </nav>
+
+  <script>
+    // مقداردهی اولیه Telegram WebApp
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        document.getElementById('userInfo').innerText = tg.initDataUnsafe.user.first_name;
+      }
+    }
+
+    // تغییر تب‌ها
+    function switchTab(tabName, btn) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById('tab-' + tabName).classList.add('active');
+      if (btn) {
+        btn.classList.add('active');
+      }
+    }
+
+    // ارسال فرم تیکت پشتیبانی به ربات
+    function submitTicket(event) {
+      event.preventDefault();
+
+      const category = document.getElementById('ticketCategory').value;
+      const subject = document.getElementById('ticketSubject').value.trim();
+      const message = document.getElementById('ticketMessage').value.trim();
+
+      if (!subject || !message) return;
+
+      const payload = {
+        action: "submit_ticket",
+        category: category,
+        subject: subject,
+        message: message
+      };
+
+      if (tg) {
+        // ارسال داده به ربات اصلی تلگرام
+        tg.sendData(JSON.stringify(payload));
+      } else {
+        // حالت تست مرورگر عادی
+        const alertBox = document.getElementById('ticketAlert');
+        alertBox.style.display = 'block';
+        document.getElementById('ticketForm').reset();
+        setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+      }
+    }
+  </script>
 </body>
 </html>
