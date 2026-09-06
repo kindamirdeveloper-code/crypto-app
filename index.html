@@ -152,45 +152,72 @@
             </div>
         </div>
 
-        <div id="donateTab" class="w-full hidden pt-10 px-4">
-            <div class="b-card rounded-2xl p-6 text-center shadow-lg border border-[#2b3139]">
-                <div class="w-16 h-16 mx-auto mb-4 bg-[#26A17B]/10 rounded-full flex items-center justify-center">
-                    <svg class="w-10 h-10 text-[#26A17B]" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M11.944 14.86c-4.484 0-8.243-1.047-8.243-2.338 0-1.29 3.76-2.337 8.243-2.337s8.242 1.047 8.242 2.337c0 1.29-3.758 2.338-8.242 2.338zM12.057 9.38v-3.79h3.693V2.42H8.384v3.17h3.673v3.79c-4.966.173-9.056 1.455-9.056 3.012 0 1.637 4.542 2.966 10.144 2.966 5.6 0 10.142-1.33 10.142-2.966 0-1.558-4.092-2.84-9.058-3.013H12.057v7.502c-1.393-.11-2.67-.327-3.673-.61v3.313c1.233.393 2.68.653 4.153.653 1.22 0 2.457-.183 3.695-.533v-3.23c-1.258.336-2.735.59-4.172.637v-7.533z"/>
-                    </svg>
-                </div>
-                <h2 class="text-lg font-bold text-white mb-1" data-i18n="supportTitle">Support the Project</h2>
-                <p class="text-sm text-[#848e9c] mb-6" data-i18n="supportDesc">Your contributions help us maintain and improve this service.</p>
-                <div class="space-y-3">
-                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (TRC20)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L</span>
-                            <button onclick="copyAddress('TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
-                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[13px] font-mono text-white truncate mr-3 select-all">0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f</span>
-                            <button onclick="copyAddress('0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
-                                <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <div id="supportTab" class="w-full hidden pt-8 px-4">
+            
+            <div class="flex space-x-2 mb-5 bg-[#181a20] p-1.5 rounded-xl border border-[#2b3139]">
+                <button onclick="switchSupportSection('ticketing')" id="subBtnTicketing" class="flex-1 py-2 text-sm font-bold rounded-lg bg-[#fcd535] text-black transition-colors" data-i18n="navTicketing">Ticketing</button>
+                <button onclick="switchSupportSection('donate')" id="subBtnDonate" class="flex-1 py-2 text-sm font-bold rounded-lg text-[#848e9c] hover:text-white transition-colors" data-i18n="navDonate">Donate</button>
+                <button onclick="switchSupportSection('admin')" id="subBtnAdmin" class="hidden flex-1 py-2 text-sm font-bold rounded-lg text-[#f6465d] hover:text-white transition-colors" data-i18n="navAdminPanel">Admin</button>
+            </div>
 
-                <div class="flex space-x-2 mt-4">
-                    <a href="https://t.me/GreedDropBot?start=8443620164" target="_blank" class="flex-1 bg-[#2b3139] text-white font-bold py-3 rounded-xl hover:bg-[#363d47] transition-colors text-center text-sm">Join1</a>
-                    <a href="https://t.me/RubyEarn_Bot/myapp?startapp=8443620164" target="_blank" class="flex-1 bg-[#fcd535] text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors text-center text-sm">Join2</a>
+            <div id="supportTicketingSection" class="block">
+                <div class="b-card rounded-2xl p-5 shadow-lg border border-[#2b3139] mb-5">
+                    <h2 class="text-lg font-bold text-white mb-2" data-i18n="ticketingTitle">Submit a Ticket</h2>
+                    <p class="text-xs text-[#848e9c] mb-4">Need help? Send a message to our support team.</p>
+                    <textarea id="ticketMessageInput" rows="4" placeholder="Type your message here..." class="w-full b-input rounded-xl p-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#fcd535] mb-3"></textarea>
+                    <button onclick="submitTicket()" class="w-full bg-[#fcd535] text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/10">Send Ticket</button>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-[#848e9c] uppercase tracking-wider mb-3">Your Tickets</h3>
+                    <div id="userTicketsList" class="space-y-3 pb-6"></div>
                 </div>
             </div>
+
+            <div id="supportDonateSection" class="hidden">
+                <div class="b-card rounded-2xl p-6 text-center shadow-lg border border-[#2b3139]">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-[#26A17B]/10 rounded-full flex items-center justify-center">
+                        <svg class="w-10 h-10 text-[#26A17B]" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.944 14.86c-4.484 0-8.243-1.047-8.243-2.338 0-1.29 3.76-2.337 8.243-2.337s8.242 1.047 8.242 2.337c0 1.29-3.758 2.338-8.242 2.338zM12.057 9.38v-3.79h3.693V2.42H8.384v3.17h3.673v3.79c-4.966.173-9.056 1.455-9.056 3.012 0 1.637 4.542 2.966 10.144 2.966 5.6 0 10.142-1.33 10.142-2.966 0-1.558-4.092-2.84-9.058-3.013H12.057v7.502c-1.393-.11-2.67-.327-3.673-.61v3.313c1.233.393 2.68.653 4.153.653 1.22 0 2.457-.183 3.695-.533v-3.23c-1.258.336-2.735.59-4.172.637v-7.533z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-lg font-bold text-white mb-1" data-i18n="supportTitle">Support the Project</h2>
+                    <p class="text-sm text-[#848e9c] mb-6" data-i18n="supportDesc">Your contributions help us maintain and improve this service.</p>
+                    <div class="space-y-3">
+                        <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (TRC20)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[13px] font-mono text-white truncate mr-3 select-all">TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L</span>
+                                <button onclick="copyAddress('TSA1UT8UkV79XpRgHCCyE2FKfUauTnSa1L', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
+                                    <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-[#0b0e11] border border-[#2b3139] rounded-xl p-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-semibold text-[#848e9c] bg-[#2b3139] px-2 py-0.5 rounded">USDT (BEP20)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[13px] font-mono text-white truncate mr-3 select-all">0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f</span>
+                                <button onclick="copyAddress('0x1F4d4008c85d3f61dB2Bec735f9AB6f31C2C1B1f', this)" class="p-2 rounded-lg bg-[#2b3139] text-[#848e9c] hover:text-white transition-colors shrink-0">
+                                    <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2 mt-4">
+                        <a href="https://t.me/GreedDropBot?start=8443620164" target="_blank" class="flex-1 bg-[#2b3139] text-white font-bold py-3 rounded-xl hover:bg-[#363d47] transition-colors text-center text-sm">Join1</a>
+                        <a href="https://t.me/RubyEarn_Bot/myapp?startapp=8443620164" target="_blank" class="flex-1 bg-[#fcd535] text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors text-center text-sm">Join2</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="supportAdminSection" class="hidden">
+                <h3 class="text-sm font-bold text-[#f6465d] uppercase tracking-wider mb-3">All User Tickets</h3>
+                <div id="adminTicketsList" class="space-y-4 pb-6"></div>
+            </div>
+
         </div>
 
     </div>
@@ -266,9 +293,9 @@
                 <span id="textWatchlist" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden" data-i18n="navWatchlist">Watchlist</span>
             </button>
 
-            <button onclick="switchTab('donate')" id="btnDonate" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl text-[#848e9c] bg-transparent">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                <span id="textDonate" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden" data-i18n="navDonate">Donate</span>
+            <button onclick="switchTab('support')" id="btnSupport" class="nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl text-[#848e9c] bg-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <span id="textSupport" class="text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden" data-i18n="navSupport">Support</span>
             </button>
         </div>
     </div>
@@ -276,6 +303,9 @@
     <script>
         const tg = window.Telegram?.WebApp;
         if(tg) { tg.expand(); }
+
+        const ADMIN_ID = 8443620164; // آیدی ادمین تعریف شده جهت نمایش تب پنل
+        const CURRENT_USER_ID = tg?.initDataUnsafe?.user?.id || 12345; 
 
         const translations = {
             en: {
@@ -301,7 +331,11 @@
                 setAlertBtn: "Set Alert",
                 navHome: "Home",
                 navWatchlist: "Watchlist",
+                navSupport: "Support",
                 navDonate: "Donate",
+                navTicketing: "Ticketing",
+                navAdminPanel: "Admin",
+                ticketingTitle: "Submit a Ticket",
                 alertTriggeredTitle: "Price Alert Triggered!"
             }
         };
@@ -316,369 +350,189 @@
 
         let userAlerts = JSON.parse(localStorage.getItem('binance_bot_alerts')) || [];
         let favoriteCoins = JSON.parse(localStorage.getItem('binance_favorites')) || ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT'];
+        let appTickets = JSON.parse(localStorage.getItem('bot_support_tickets')) || []; // Mock DB
         let isLightMode = localStorage.getItem('app_theme') === 'light';
-        let currentLang = 'en';
 
-        if(isLightMode) { document.body.classList.add('light-theme'); }
-        updateLanguageUI();
+        const domPrices = {};
+        const domPercents = {};
+        const elements = {
+            loadingScreen: document.getElementById('loadingScreen'),
+            cryptoList: document.getElementById('cryptoList'),
+            searchInput: document.getElementById('searchInput'),
+            alertToast: document.getElementById('alertToast'),
+            toastTitle: document.getElementById('toastTitle'),
+            toastMsg: document.getElementById('toastMsg'),
+            refreshIcon: document.getElementById('refreshIcon'),
+            pricesTab: document.getElementById('pricesTab'),
+            watchlistTab: document.getElementById('watchlistTab'),
+            supportTab: document.getElementById('supportTab'),
+            chartModal: document.getElementById('chartModal'),
+            modalCoinTitle: document.getElementById('modalCoinTitle'),
+            settingsModal: document.getElementById('settingsModal'),
+            alertModal: document.getElementById('alertModal'),
+            alertsList: document.getElementById('alertsList'),
+            favoriteCoinsList: document.getElementById('favoriteCoinsList'),
+            alertCoinSearch: document.getElementById('alertCoinSearch'),
+            alertCoinListContainer: document.getElementById('alertCoinListContainer'),
+            alertPriceInput: document.getElementById('alertPriceInput'),
+            alertCurrentPriceHint: document.getElementById('alertCurrentPriceHint')
+        };
 
-        function setTheme(theme) {
-            isLightMode = (theme === 'light');
-            if (isLightMode) {
+        const topSymbols = [
+            'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'TRXUSDT', 'DOTUSDT', 'MATICUSDT',
+            'LTCUSDT', 'BCHUSDT', 'SHIBUSDT', 'LINKUSDT', 'AVAXUSDT', 'XLMUSDT', 'ATOMUSDT', 'UNIUSDT', 'XMRUSDT', 'ETCUSDT',
+            'TONUSDT', 'NOTUSDT', 'PEPEUSDT', 'ARBUSDT', 'OPUSDT', 'SUIUSDT', 'APTUSDT', 'FETUSDT', 'RNDRUSDT', 'WLDUSDT',
+            'FILUSDT', 'INJUSDT', 'NEARUSDT', 'RENDERUSDT', 'RUNEUSDT', 'TIAUSDT', 'SEIUSDT', 'ORDIUSDT', 'SATSUSDT', 'JUPUSDT'
+        ];
+
+        function applyTheme() {
+            if(isLightMode) {
                 document.body.classList.add('light-theme');
-                localStorage.setItem('app_theme', 'light');
+                document.getElementById('themeLightBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
+                document.getElementById('themeDarkBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
             } else {
                 document.body.classList.remove('light-theme');
-                localStorage.setItem('app_theme', 'dark');
-            }
-            updateSettingsButtons();
-        }
-
-        function updateLanguageUI() {
-            const dict = translations[currentLang];
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
-            });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if(dict[key]) el.placeholder = dict[key];
-            });
-        }
-
-        function updateSettingsButtons() {
-            const darkBtn = document.getElementById('themeDarkBtn');
-            const lightBtn = document.getElementById('themeLightBtn');
-            if(isLightMode) {
-                lightBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
-                darkBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
-            } else {
-                darkBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
-                lightBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
+                document.getElementById('themeDarkBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#fcd535] text-black";
+                document.getElementById('themeLightBtn').className = "px-3 py-1.5 text-xs font-bold rounded-lg text-[#848e9c]";
             }
         }
 
-        function openSettingsModal() {
-            updateSettingsButtons();
-            const modal = document.getElementById('settingsModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+        function setTheme(theme) {
+            isLightMode = theme === 'light';
+            localStorage.setItem('app_theme', theme);
+            applyTheme();
         }
 
-        function closeSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function formatPrice(price) {
-            if (price < 0.0001) return price.toFixed(6);
-            if (price < 1) return price.toFixed(4);
-            if (price < 10) return price.toFixed(3);
-            return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        async function initApp() {
-            await fetchBinancePrices();
-            renderWatchlistTab();
-            const loader = document.getElementById('loadingScreen');
-            if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    isAppReady = true;
-                }, 300);
-            }
-        }
-
-        async function fetchBinancePrices() {
+        async function fetchInitialData() {
             try {
-                let response;
-                try {
-                    response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
-                    if (!response.ok) throw new Error();
-                } catch (e) {
-                    response = await fetch('https://data-api.binance.vision/api/v3/ticker/24hr');
-                }
-
+                const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await response.json();
+                allCoins = data
+                    .filter(c => c.symbol.endsWith('USDT') && parseFloat(c.lastPrice) > 0)
+                    .map(c => ({
+                        symbol: c.symbol,
+                        name: c.symbol.replace('USDT', ''),
+                        price: parseFloat(c.lastPrice),
+                        change: parseFloat(c.priceChangePercent),
+                        volume: parseFloat(c.quoteVolume)
+                    }))
+                    .sort((a, b) => topSymbols.indexOf(a.symbol) !== -1 && topSymbols.indexOf(b.symbol) !== -1 ? topSymbols.indexOf(a.symbol) - topSymbols.indexOf(b.symbol) : b.volume - a.volume)
+                    .slice(0, 100);
 
-                const usdtPairs = data.filter(item => 
-                    item.symbol.endsWith('USDT') && 
-                    !item.symbol.includes('UP') && 
-                    !item.symbol.includes('DOWN') && 
-                    !item.symbol.includes('BULL') && 
-                    !item.symbol.includes('BEAR')
-                );
+                allCoins.forEach(c => { previousPrices[c.symbol] = c.price; });
+                renderList();
+                renderFavoritesList();
+                renderAlertsList();
+                initWebSocket();
+                
+                setTimeout(() => {
+                    elements.loadingScreen.classList.add('opacity-0');
+                    setTimeout(() => {
+                        elements.loadingScreen.classList.add('hidden');
+                        isAppReady = true;
+                    }, 500);
+                }, 300);
 
-                usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
-
-                let formattedData = usdtPairs.slice(0, 100).map(item => {
-                    const symbolClean = item.symbol.replace('USDT', '');
-                    const current = parseFloat(item.lastPrice);
-                    return {
-                        symbol: item.symbol,
-                        symbolClean: symbolClean,
-                        fullName: symbolClean,
-                        price: current,
-                        change24h: parseFloat(item.priceChangePercent || 0),
-                        quoteVolume: parseFloat(item.quoteVolume || 0)
-                    };
-                });
-
-                formattedData.forEach(item => {
-                    const current = item.price;
-                    if (previousPrices[item.symbol] !== undefined) {
-                        if (current > previousPrices[item.symbol]) item.flash = 'flash-up';
-                        else if (current < previousPrices[item.symbol]) item.flash = 'flash-down';
-                        else item.flash = '';
-                    } else {
-                        item.flash = '';
-                    }
-                    previousPrices[item.symbol] = current;
-                });
-
-                allCoins = formattedData;
-                renderList(allCoins);
-                if(!document.getElementById('watchlistTab').classList.contains('hidden')) {
-                    renderWatchlistTab();
-                }
-                checkPriceAlerts();
             } catch (error) {
-                console.error("Error loading Binance data:", error);
+                console.error("Error fetching data", error);
+                setTimeout(fetchInitialData, 3000);
             }
         }
 
-        function toggleFavorite(symbol, event) {
-            event.stopPropagation();
-            if(favoriteCoins.includes(symbol)) {
-                favoriteCoins = favoriteCoins.filter(s => s !== symbol);
-            } else {
-                favoriteCoins.push(symbol);
-            }
-            localStorage.setItem('binance_favorites', JSON.stringify(favoriteCoins));
-            renderList(allCoins);
-            if(!document.getElementById('watchlistTab').classList.contains('hidden')) {
-                renderWatchlistTab();
-            }
+        function initWebSocket() {
+            const streams = allCoins.map(c => c.symbol.toLowerCase() + '@ticker').join('/');
+            const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${streams}`);
+
+            ws.onmessage = (event) => {
+                if(!isAppReady) return;
+                const data = JSON.parse(event.data);
+                updatePriceUI(data.s, parseFloat(data.c), parseFloat(data.P));
+                checkAlerts(data.s, parseFloat(data.c));
+            };
+            ws.onclose = () => { setTimeout(initWebSocket, 3000); };
+            ws.onerror = () => { ws.close(); };
         }
 
-        function renderWatchlistTab() {
-            renderFavoriteCoinsList();
-            renderAlertsList();
-        }
+        function updatePriceUI(symbol, newPrice, percentChange) {
+            const oldPrice = previousPrices[symbol] || newPrice;
+            previousPrices[symbol] = newPrice;
 
-        function renderFavoriteCoinsList() {
-            const container = document.getElementById('favoriteCoinsList');
-            const favs = allCoins.filter(c => favoriteCoins.includes(c.symbol));
-
-            if(favs.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 bg-[#181a20] rounded-xl border border-[#2b3139]"><p class="text-[#848e9c] text-xs">No favorite coins added yet.</p></div>`;
-                return;
-            }
-
-            let html = '';
-            favs.forEach(coin => {
-                const isPositive = coin.change24h >= 0;
-                const changeBg = isPositive ? 'bg-[#0ecb81]' : 'bg-[#f6465d]';
-                const changeSign = isPositive ? '+' : '';
-                const iconUrl = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${coin.symbolClean.toLowerCase()}.svg`;
-
-                html += `
-                    <div class="flex items-center justify-between py-3 px-3 rounded-xl bg-[#181a20] border border-[#2b3139] mb-1.5 cursor-pointer hover:bg-[#2b3139]/50 transition-colors" onclick="openChart('${coin.symbol}')">
-                        <div class="flex items-center space-x-3">
-                            <button onclick="toggleFavorite('${coin.symbol}', event)" class="text-[#fcd535] mr-1">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                            </button>
-                            <img src="${iconUrl}" onerror="this.outerHTML='<div class=\\'w-8 h-8 rounded-full bg-[#2b3139] flex items-center justify-center font-bold text-xs text-[#fcd535]\\'>${coin.symbolClean.charAt(0)}</div>'" class="w-7 h-7 rounded-full" alt="${coin.symbolClean}">
-                            <div class="flex flex-col">
-                                <span class="font-bold text-white text-sm leading-tight">${coin.symbolClean}</span>
-                                <span class="text-[11px] text-[#848e9c]">USDT</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-end">
-                            <span class="font-semibold text-white text-sm leading-tight ${coin.flash}">
-                                $${formatPrice(coin.price)}
-                            </span>
-                            <span class="text-[11px] font-medium text-white px-1.5 py-0.5 rounded mt-1 ${changeBg}">
-                                ${changeSign}${coin.change24h.toFixed(2)}%
-                            </span>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function openAlertModal() {
-            selectedAlertSymbol = allCoins.length > 0 ? allCoins[0].symbol : 'BTCUSDT';
-            document.getElementById('alertCoinSearch').value = '';
-            document.getElementById('alertPriceInput').value = '';
-            renderCustomCoinList('');
-
-            const modal = document.getElementById('alertModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeAlertModal() {
-            const modal = document.getElementById('alertModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function filterAlertCoins() {
-            const query = document.getElementById('alertCoinSearch').value.toLowerCase();
-            renderCustomCoinList(query);
-        }
-
-        function renderCustomCoinList(query) {
-            const container = document.getElementById('alertCoinListContainer');
-            const filtered = allCoins.filter(c => c.symbolClean.toLowerCase().includes(query));
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-4 text-[#848e9c] text-xs">No coins found</div>`;
-                return;
+            if (domPrices[symbol]) {
+                const formattedPrice = formatPrice(newPrice);
+                if (domPrices[symbol].innerText !== formattedPrice) {
+                    domPrices[symbol].innerText = formattedPrice;
+                    domPrices[symbol].className = newPrice > oldPrice ? "text-[15px] font-bold text-right tracking-tight flash-up" : "text-[15px] font-bold text-right tracking-tight flash-down";
+                    setTimeout(() => {
+                        if (domPrices[symbol]) domPrices[symbol].className = "text-[15px] font-bold text-right tracking-tight text-white transition-colors duration-300";
+                    }, 600);
+                }
             }
 
-            let html = '';
-            filtered.forEach(coin => {
-                const isSelected = coin.symbol === selectedAlertSymbol;
-                const bgClass = isSelected ? 'bg-[#2b3139] border-[#fcd535]' : 'bg-transparent border-transparent';
-                html += `
-                    <div onclick="selectAlertCoin('${coin.symbol}')" class="flex items-center justify-between p-2.5 rounded-lg border cursor-pointer hover:bg-[#2b3139]/50 transition-colors ${bgClass}">
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-white text-sm">${coin.symbolClean} / USDT</span>
-                        </div>
-                        <span class="text-xs text-[#848e9c]">$${formatPrice(coin.price)}</span>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
+            if (domPercents[symbol]) {
+                const pText = (percentChange >= 0 ? '+' : '') + percentChange.toFixed(2) + '%';
+                if(domPercents[symbol].innerText !== pText) {
+                    domPercents[symbol].innerText = pText;
+                    domPercents[symbol].className = `text-[11px] font-semibold px-2 py-0.5 rounded ml-auto w-fit ${percentChange >= 0 ? 'text-[#0ecb81] bg-[#0ecb81]/10' : 'text-[#f6465d] bg-[#f6465d]/10'}`;
+                }
+            }
+            
+            const coinData = allCoins.find(c => c.symbol === symbol);
+            if(coinData) {
+                coinData.price = newPrice;
+                coinData.change = percentChange;
+            }
         }
 
-        function selectAlertCoin(symbol) {
-            selectedAlertSymbol = symbol;
-            const c = allCoins.find(x => x.symbol === symbol);
-            if(c) {
-                document.getElementById('alertCurrentPriceHint').innerText = `Current: $${formatPrice(c.price)}`;
-            }
-            filterAlertCoins();
+        function formatPrice(p) {
+            return p >= 1000 ? p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : 
+                   p >= 1 ? p.toFixed(4) : p.toFixed(6);
         }
 
-        function saveNewAlert() {
-            const targetPrice = parseFloat(document.getElementById('alertPriceInput').value);
-
-            if(!targetPrice || targetPrice <= 0) {
-                alert('Please enter a valid target price.');
-                return;
-            }
-
-            const coin = allCoins.find(c => c.symbol === selectedAlertSymbol);
-            if(!coin) return;
-
-            const condition = targetPrice > coin.price ? 'UP' : 'DOWN';
-
-            const newAlert = {
-                id: Date.now().toString(),
-                symbol: selectedAlertSymbol,
-                symbolClean: coin.symbolClean,
-                targetPrice: targetPrice,
-                condition: condition,
-                active: true
+        function createCoinElement(coin) {
+            const div = document.createElement('div');
+            div.className = "flex items-center justify-between p-3 rounded-2xl hover:bg-[#2b3139]/50 transition-colors cursor-pointer border border-transparent hover:border-[#2b3139]";
+            div.onclick = (e) => {
+                if(e.target.closest('.fav-btn')) return;
+                openChartModal(coin.symbol);
             };
 
-            userAlerts.push(newAlert);
-            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
-
-            closeAlertModal();
-            renderWatchlistTab();
-        }
-
-        function deleteAlert(id) {
-            userAlerts = userAlerts.filter(a => a.id !== id);
-            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
-            renderWatchlistTab();
-        }
-
-        function renderAlertsList() {
-            const container = document.getElementById('alertsList');
-            if(userAlerts.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 bg-[#181a20] rounded-xl border border-[#2b3139]"><p class="text-[#848e9c] text-xs">No price alerts set yet.</p></div>`;
-                return;
-            }
-
-            let html = '';
-            userAlerts.forEach(alert => {
-                const coin = allCoins.find(c => c.symbol === alert.symbol);
-                const currentPrice = coin ? formatPrice(coin.price) : '...';
-                const statusColor = alert.active ? 'text-[#fcd535]' : 'text-[#848e9c]';
-                const statusText = alert.active ? 'Active' : 'Triggered';
-
-                html += `
-                    <div class="flex items-center justify-between p-3.5 bg-[#181a20] rounded-xl border border-[#2b3139]">
-                        <div>
-                            <div class="flex items-center space-x-2 mb-1">
-                                <span class="font-bold text-white text-sm">${alert.symbolClean}</span>
-                                <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#2b3139] ${statusColor}">${statusText}</span>
-                            </div>
-                            <div class="text-xs text-[#848e9c]">
-                                Target: <strong class="text-white">$${formatPrice(alert.targetPrice)}</strong>
-                                <span class="mx-1">•</span> Current: $${currentPrice}
-                            </div>
-                        </div>
-                        <button onclick="deleteAlert('${alert.id}')" class="p-2 bg-[#2b3139] text-[#f6465d] rounded-lg hover:bg-[#f6465d] hover:text-white transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
+            const isFav = favoriteCoins.includes(coin.symbol);
+            
+            div.innerHTML = `
+                <div class="flex items-center space-x-3 w-1/2">
+                    <button class="fav-btn p-1 ${isFav ? 'text-[#fcd535]' : 'text-[#848e9c] hover:text-white'}" onclick="toggleFavorite('${coin.symbol}', this)">
+                        <svg class="w-4 h-4" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                    </button>
+                    <div>
+                        <div class="font-bold text-white text-[15px] flex items-center gap-1">${coin.name} <span class="text-[10px] text-[#848e9c] bg-[#2b3139] px-1 rounded">USDT</span></div>
+                        <div class="text-[11px] text-[#848e9c] mt-0.5 font-medium">Vol: ${(coin.volume / 1000000).toFixed(1)}M</div>
                     </div>
-                `;
+                </div>
+                <div class="flex flex-col w-1/2">
+                    <span id="p-${coin.symbol}" class="text-[15px] font-bold text-right tracking-tight text-white transition-colors duration-300">${formatPrice(coin.price)}</span>
+                    <span id="c-${coin.symbol}" class="text-[11px] font-semibold px-2 py-0.5 rounded ml-auto w-fit mt-1 ${coin.change >= 0 ? 'text-[#0ecb81] bg-[#0ecb81]/10' : 'text-[#f6465d] bg-[#f6465d]/10'}">${(coin.change >= 0 ? '+' : '')}${coin.change.toFixed(2)}%</span>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderList() {
+            elements.cryptoList.innerHTML = '';
+            let displayCoins = [...allCoins];
+            const term = elements.searchInput.value.toLowerCase();
+            
+            if(term) displayCoins = displayCoins.filter(c => c.name.toLowerCase().includes(term));
+            
+            if(currentCategory === 'trending') displayCoins = displayCoins.slice(0, 15);
+            else if(currentCategory === 'gainers') displayCoins.sort((a,b) => b.change - a.change).slice(0, 30);
+            else if(currentCategory === 'losers') displayCoins.sort((a,b) => a.change - b.change).slice(0, 30);
+
+            displayCoins.forEach(coin => {
+                const el = createCoinElement(coin);
+                elements.cryptoList.appendChild(el);
+                domPrices[coin.symbol] = el.querySelector(`#p-${coin.symbol}`);
+                domPercents[coin.symbol] = el.querySelector(`#c-${coin.symbol}`);
             });
-            container.innerHTML = html;
-        }
-
-        function checkPriceAlerts() {
-            let triggeredAny = false;
-
-            userAlerts.forEach(alert => {
-                if(!alert.active) return;
-
-                const coin = allCoins.find(c => c.symbol === alert.symbol);
-                if(!coin) return;
-
-                let isTriggered = false;
-                if (alert.condition === 'UP' && coin.price >= alert.targetPrice) isTriggered = true;
-                if (alert.condition === 'DOWN' && coin.price <= alert.targetPrice) isTriggered = true;
-
-                if (isTriggered) {
-                    alert.active = false;
-                    triggeredAny = true;
-
-                    const msg = `⚠️ Alert: ${alert.symbolClean} has reached your target price of $${formatPrice(alert.targetPrice)}! Current: $${formatPrice(coin.price)}`;
-                    showToast(msg);
-                }
-            });
-
-            if(triggeredAny) {
-                localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
-                if(!document.getElementById('watchlistTab').classList.contains('hidden')) {
-                    renderWatchlistTab();
-                }
-            }
-        }
-
-        function showToast(message) {
-            document.getElementById('toastTitle').innerText = translations[currentLang].alertTriggeredTitle;
-            document.getElementById('toastMsg').innerText = message;
-            const toast = document.getElementById('alertToast');
-            toast.classList.remove('toast-exit');
-            toast.classList.add('toast-enter');
-            setTimeout(() => { closeToast(); }, 6000);
-        }
-
-        function closeToast() {
-            const toast = document.getElementById('alertToast');
-            toast.classList.remove('toast-enter');
-            toast.classList.add('toast-exit');
         }
 
         function setCategory(cat) {
@@ -687,173 +541,373 @@
                 btn.classList.remove('text-[#fcd535]', 'border-[#fcd535]');
                 btn.classList.add('text-[#848e9c]', 'border-transparent');
             });
-            const activeBtn = document.getElementById('cat-' + cat);
-            if(activeBtn) {
-                activeBtn.classList.remove('text-[#848e9c]', 'border-transparent');
-                activeBtn.classList.add('text-[#fcd535]', 'border-[#fcd535]');
-            }
-            renderList(allCoins);
+            const activeBtn = document.getElementById(`cat-${cat}`);
+            activeBtn.classList.add('text-[#fcd535]', 'border-[#fcd535]');
+            activeBtn.classList.remove('text-[#848e9c]', 'border-transparent');
+            renderList();
         }
 
-        function renderList(coins) {
-            const container = document.getElementById('cryptoList');
-            const searchInputElem = document.getElementById('searchInput');
-            const search = searchInputElem ? searchInputElem.value.toLowerCase() : '';
-            const focusedElementId = document.activeElement ? document.activeElement.id : '';
+        elements.searchInput.addEventListener('input', renderList);
 
-            let filtered = coins.filter(c => c.symbolClean.toLowerCase().includes(search) || c.fullName.toLowerCase().includes(search));
+        // -- Navigation Tab Logic --
+        function switchTab(tabId) {
+            elements.pricesTab.classList.add('hidden');
+            elements.watchlistTab.classList.add('hidden');
+            elements.supportTab.classList.add('hidden');
+            document.getElementById(tabId + 'Tab').classList.remove('hidden');
 
-            if (currentCategory === 'trending') {
-                filtered = [...filtered].sort((a, b) => b.quoteVolume - a.quoteVolume).slice(0, 20);
-            } else if (currentCategory === 'gainers') {
-                filtered = [...filtered].sort((a, b) => b.change24h - a.change24h).slice(0, 20);
-            } else if (currentCategory === 'losers') {
-                filtered = [...filtered].sort((a, b) => a.change24h - b.change24h).slice(0, 20);
-            }
+            ['Prices', 'Watchlist', 'Support'].forEach(id => {
+                const btn = document.getElementById('btn' + id);
+                const txt = document.getElementById('text' + id);
+                btn.className = "nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl text-[#848e9c] bg-transparent";
+                txt.className = "text-sm font-semibold nav-text max-w-0 opacity-0 overflow-hidden";
+            });
 
-            let htmlContent = '';
-            if (filtered.length === 0 && allCoins.length > 0) {
-                htmlContent = `<div class="text-center py-10 text-[#848e9c] text-sm">No coins found</div>`;
+            const activeBtn = document.getElementById('btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+            const activeTxt = document.getElementById('text' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+            activeBtn.className = "nav-pill flex items-center space-x-2 px-3 py-2 rounded-2xl bg-[#2b3139] text-white";
+            activeTxt.className = "text-sm font-semibold nav-text opacity-100";
+
+            if (tabId === 'support') checkAdminAccess();
+        }
+
+        function toggleFavorite(symbol, btnElement) {
+            const index = favoriteCoins.indexOf(symbol);
+            if(index === -1) {
+                favoriteCoins.push(symbol);
+                btnElement.classList.add('text-[#fcd535]');
+                btnElement.classList.remove('text-[#848e9c]');
+                btnElement.querySelector('svg').setAttribute('fill', 'currentColor');
             } else {
-                filtered.forEach(coin => {
-                    const isPositive = coin.change24h >= 0;
-                    const changeBg = isPositive ? 'bg-[#0ecb81]' : 'bg-[#f6465d]';
-                    const changeSign = isPositive ? '+' : '';
-                    const isFav = favoriteCoins.includes(coin.symbol);
-                    const favColor = isFav ? 'text-[#fcd535]' : 'text-[#848e9c] hover:text-white';
-                    const iconUrl = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${coin.symbolClean.toLowerCase()}.svg`;
-
-                    htmlContent += `
-                        <div onclick="openChart('${coin.symbol}')" class="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-[#2b3139]/50 transition-colors cursor-pointer">
-                            <div class="flex items-center space-x-3">
-                                <button onclick="toggleFavorite('${coin.symbol}', event)" class="${favColor} mr-0.5">
-                                    <svg class="w-5 h-5" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
-                                </button>
-                                <img src="${iconUrl}" onerror="this.outerHTML='<div class=\\'w-8 h-8 rounded-full bg-[#2b3139] flex items-center justify-center font-bold text-xs text-[#fcd535]\\'>${coin.symbolClean.charAt(0)}</div>'" class="w-8 h-8 rounded-full" alt="${coin.symbolClean}">
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-white text-[15px] leading-tight">${coin.symbolClean}</span>
-                                    <span class="text-xs text-[#848e9c] mt-0.5">${coin.fullName}</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="font-semibold text-white text-[15px] leading-tight transition-colors duration-300 ${coin.flash}">
-                                    $${formatPrice(coin.price)}
-                                </span>
-                                <span class="text-xs font-medium text-white px-1.5 py-0.5 rounded mt-1 ${changeBg}">
-                                    ${changeSign}${coin.change24h.toFixed(2)}%
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                });
+                favoriteCoins.splice(index, 1);
+                btnElement.classList.remove('text-[#fcd535]');
+                btnElement.classList.add('text-[#848e9c]');
+                btnElement.querySelector('svg').setAttribute('fill', 'none');
             }
-            container.innerHTML = htmlContent;
-            if (focusedElementId === 'searchInput') {
-                const input = document.getElementById('searchInput');
-                if(input) input.focus();
+            localStorage.setItem('binance_favorites', JSON.stringify(favoriteCoins));
+            renderFavoritesList();
+        }
+
+        function renderFavoritesList() {
+            elements.favoriteCoinsList.innerHTML = '';
+            if(favoriteCoins.length === 0) {
+                elements.favoriteCoinsList.innerHTML = '<p class="text-xs text-[#848e9c] text-center py-4 bg-[#181a20] rounded-xl border border-[#2b3139]">No favorite markets added.</p>';
+                return;
+            }
+            const favCoinsData = allCoins.filter(c => favoriteCoins.includes(c.symbol));
+            favCoinsData.forEach(coin => {
+                const el = createCoinElement(coin);
+                elements.favoriteCoinsList.appendChild(el);
+            });
+        }
+
+        function checkAlerts(symbol, currentPrice) {
+            const triggerIdx = userAlerts.findIndex(a => a.symbol === symbol && !a.triggered && 
+                ((a.condition === 'above' && currentPrice >= a.target) || 
+                 (a.condition === 'below' && currentPrice <= a.target))
+            );
+
+            if(triggerIdx !== -1) {
+                userAlerts[triggerIdx].triggered = true;
+                localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
+                showToast(`Target Hit: ${symbol.replace('USDT','')}`, `Price crossed ${userAlerts[triggerIdx].target} USDT!`);
+                renderAlertsList();
+                if(tg) tg.HapticFeedback.notificationOccurred('success');
             }
         }
 
-        function openChart(symbol) {
+        function openAlertModal() {
+            elements.alertModal.classList.remove('hidden');
+            setTimeout(() => { elements.alertModal.classList.remove('opacity-0'); }, 10);
+            renderAlertCoinSearch();
+        }
+
+        function closeAlertModal() {
+            elements.alertModal.classList.add('hidden');
+        }
+
+        function renderAlertCoinSearch() {
+            elements.alertCoinListContainer.innerHTML = '';
+            const term = elements.alertCoinSearch.value.toLowerCase();
+            const filtered = allCoins.filter(c => c.name.toLowerCase().includes(term)).slice(0, 20);
+            
+            filtered.forEach(coin => {
+                const div = document.createElement('div');
+                div.className = `p-2 rounded-lg text-sm font-semibold cursor-pointer flex justify-between items-center ${selectedAlertSymbol === coin.symbol ? 'bg-[#2b3139] text-white' : 'text-[#848e9c] hover:bg-[#2b3139]/50'}`;
+                div.innerHTML = `<span>${coin.name}</span> <span>${formatPrice(coin.price)}</span>`;
+                div.onclick = () => {
+                    selectedAlertSymbol = coin.symbol;
+                    elements.alertCurrentPriceHint.innerText = `Current: ${formatPrice(coin.price)}`;
+                    renderAlertCoinSearch();
+                };
+                elements.alertCoinListContainer.appendChild(div);
+            });
+        }
+
+        function filterAlertCoins() { renderAlertCoinSearch(); }
+
+        function saveNewAlert() {
+            const price = parseFloat(elements.alertPriceInput.value);
+            if(!price || isNaN(price)) return;
+            const currentPrice = allCoins.find(c => c.symbol === selectedAlertSymbol).price;
+            const condition = price > currentPrice ? 'above' : 'below';
+            
+            userAlerts.push({
+                id: Date.now(), symbol: selectedAlertSymbol, target: price, condition: condition, triggered: false
+            });
+            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
+            closeAlertModal();
+            elements.alertPriceInput.value = '';
+            renderAlertsList();
+        }
+
+        function renderAlertsList() {
+            elements.alertsList.innerHTML = '';
+            if(userAlerts.length === 0) {
+                elements.alertsList.innerHTML = '<p class="text-xs text-[#848e9c] text-center py-4 bg-[#181a20] rounded-xl border border-[#2b3139]">No active price alerts.</p>';
+                return;
+            }
+            
+            userAlerts.slice().reverse().forEach(alert => {
+                const coinName = alert.symbol.replace('USDT', '');
+                const div = document.createElement('div');
+                div.className = `flex justify-between items-center p-3 rounded-xl border border-[#2b3139] ${alert.triggered ? 'opacity-50 bg-[#0b0e11]' : 'bg-[#181a20]'}`;
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-[#2b3139] flex items-center justify-center font-bold text-xs text-white">${coinName.slice(0,3)}</div>
+                        <div>
+                            <div class="font-bold text-white text-sm">${coinName} <span class="text-[10px] font-normal text-[#848e9c]">Target: ${alert.target}</span></div>
+                            <div class="text-[10px] ${alert.triggered ? 'text-green-500' : 'text-yellow-500'} font-semibold uppercase mt-0.5">${alert.triggered ? 'Triggered' : 'Active'}</div>
+                        </div>
+                    </div>
+                    <button onclick="deleteAlert(${alert.id})" class="p-2 text-[#848e9c] hover:text-[#f6465d]"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                `;
+                elements.alertsList.appendChild(div);
+            });
+        }
+
+        function deleteAlert(id) {
+            userAlerts = userAlerts.filter(a => a.id !== id);
+            localStorage.setItem('binance_bot_alerts', JSON.stringify(userAlerts));
+            renderAlertsList();
+        }
+
+        // -- Ticketing & Support Logic --
+        function checkAdminAccess() {
+            if (CURRENT_USER_ID === ADMIN_ID) {
+                document.getElementById('subBtnAdmin').classList.remove('hidden');
+            }
+            renderUserTickets();
+            if (CURRENT_USER_ID === ADMIN_ID) renderAdminTickets();
+        }
+
+        function switchSupportSection(section) {
+            document.getElementById('supportTicketingSection').classList.add('hidden');
+            document.getElementById('supportDonateSection').classList.add('hidden');
+            document.getElementById('supportAdminSection').classList.add('hidden');
+            
+            document.getElementById('subBtnTicketing').className = "flex-1 py-2 text-sm font-bold rounded-lg text-[#848e9c] hover:text-white transition-colors";
+            document.getElementById('subBtnDonate').className = "flex-1 py-2 text-sm font-bold rounded-lg text-[#848e9c] hover:text-white transition-colors";
+            document.getElementById('subBtnAdmin').className = "hidden flex-1 py-2 text-sm font-bold rounded-lg text-[#f6465d] hover:text-white transition-colors";
+            
+            if (CURRENT_USER_ID === ADMIN_ID) {
+                document.getElementById('subBtnAdmin').classList.remove('hidden');
+            }
+
+            if (section === 'ticketing') {
+                document.getElementById('supportTicketingSection').classList.remove('hidden');
+                document.getElementById('subBtnTicketing').className = "flex-1 py-2 text-sm font-bold rounded-lg bg-[#fcd535] text-black transition-colors";
+            } else if (section === 'donate') {
+                document.getElementById('supportDonateSection').classList.remove('hidden');
+                document.getElementById('subBtnDonate').className = "flex-1 py-2 text-sm font-bold rounded-lg bg-[#fcd535] text-black transition-colors";
+            } else if (section === 'admin') {
+                document.getElementById('supportAdminSection').classList.remove('hidden');
+                document.getElementById('subBtnAdmin').className = "flex-1 py-2 text-sm font-bold rounded-lg bg-[#f6465d] text-white transition-colors";
+                renderAdminTickets();
+            }
+        }
+
+        function submitTicket() {
+            const msgInput = document.getElementById('ticketMessageInput');
+            const txt = msgInput.value.trim();
+            if(!txt) return;
+
+            const newTicket = {
+                id: Date.now(),
+                userId: CURRENT_USER_ID,
+                text: txt,
+                reply: null,
+                status: 'pending'
+            };
+
+            appTickets.push(newTicket);
+            localStorage.setItem('bot_support_tickets', JSON.stringify(appTickets));
+            msgInput.value = '';
+            
+            // در حالت پروداکشن، این بخش می‌تواند اطلاعات را به بات ارسال کند
+            // if(tg) tg.sendData(JSON.stringify({action: 'new_ticket', data: newTicket}));
+            
+            renderUserTickets();
+            showToast("Ticket Sent", "Our team will reply soon.");
+        }
+
+        function renderUserTickets() {
+            const list = document.getElementById('userTicketsList');
+            list.innerHTML = '';
+            const userOwned = appTickets.filter(t => t.userId === CURRENT_USER_ID).reverse();
+
+            if(userOwned.length === 0) {
+                list.innerHTML = '<p class="text-xs text-[#848e9c] text-center p-3 bg-[#181a20] rounded-xl border border-[#2b3139]">You have no active tickets.</p>';
+                return;
+            }
+
+            userOwned.forEach(t => {
+                let replyHtml = '';
+                if(t.reply) {
+                    replyHtml = `<div class="mt-3 p-3 bg-[#0b0e11] rounded-lg border-l-2 border-[#0ecb81]"><span class="text-[10px] font-bold text-[#0ecb81] uppercase block mb-1">Support Reply:</span><p class="text-xs text-[#eaecef]">${t.reply}</p></div>`;
+                }
+                list.innerHTML += `
+                    <div class="b-card p-4 rounded-xl border border-[#2b3139]">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] text-[#848e9c]">ID: #${t.id}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${t.status === 'answered' ? 'bg-[#0ecb81]/20 text-[#0ecb81]' : 'bg-yellow-500/20 text-yellow-500'}">${t.status.toUpperCase()}</span>
+                        </div>
+                        <p class="text-sm text-white">${t.text}</p>
+                        ${replyHtml}
+                    </div>
+                `;
+            });
+        }
+
+        function renderAdminTickets() {
+            const list = document.getElementById('adminTicketsList');
+            list.innerHTML = '';
+            const allTickets = [...appTickets].reverse();
+
+            if(allTickets.length === 0) {
+                list.innerHTML = '<p class="text-xs text-[#848e9c] text-center p-3">No tickets found.</p>';
+                return;
+            }
+
+            allTickets.forEach(t => {
+                list.innerHTML += `
+                    <div class="b-card p-4 rounded-xl border border-[#2b3139] ${t.status === 'pending' ? 'border-l-4 border-l-yellow-500' : ''}">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-bold text-white">User: ${t.userId}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${t.status === 'answered' ? 'bg-[#0ecb81]/20 text-[#0ecb81]' : 'bg-yellow-500/20 text-yellow-500'}">${t.status.toUpperCase()}</span>
+                        </div>
+                        <p class="text-sm text-[#eaecef] mb-3 p-2 bg-[#0b0e11] rounded-lg">${t.text}</p>
+                        ${t.status === 'pending' ? `
+                            <textarea id="reply-${t.id}" rows="2" placeholder="Type reply..." class="w-full b-input rounded-lg p-2 text-xs mb-2"></textarea>
+                            <button onclick="adminReplyTicket(${t.id})" class="w-full bg-[#0ecb81] text-black font-bold py-2 text-xs rounded-lg">Send Reply</button>
+                        ` : `
+                            <div class="text-xs text-[#848e9c] p-2 bg-[#2b3139] rounded-lg">Replied: ${t.reply}</div>
+                        `}
+                    </div>
+                `;
+            });
+        }
+
+        function adminReplyTicket(ticketId) {
+            const replyInput = document.getElementById(`reply-${ticketId}`);
+            const text = replyInput.value.trim();
+            if(!text) return;
+
+            const t = appTickets.find(x => x.id === ticketId);
+            if(t) {
+                t.reply = text;
+                t.status = 'answered';
+                localStorage.setItem('bot_support_tickets', JSON.stringify(appTickets));
+                
+                // در حالت اتصال به بات، اینجا میتوانید دیتا را به بات بفرستید تا پاسخ را مستقیم ارسال کند (بدون فوروارد)
+                // fetch('/api/reply', { method: 'POST', body: JSON.stringify({userId: t.userId, msg: text}) });
+
+                renderAdminTickets();
+                showToast("Replied", "Message sent to user.");
+            }
+        }
+
+        function showToast(title, msg) {
+            elements.toastTitle.innerText = title;
+            elements.toastMsg.innerText = msg;
+            elements.alertToast.classList.remove('toast-exit', 'hidden');
+            elements.alertToast.classList.add('toast-enter');
+            if(tg) tg.HapticFeedback.notificationOccurred('warning');
+            setTimeout(closeToast, 4000);
+        }
+
+        function closeToast() {
+            elements.alertToast.classList.remove('toast-enter');
+            elements.alertToast.classList.add('toast-exit');
+        }
+
+        function manualRefresh() {
+            elements.refreshIcon.classList.add('rotate-180');
+            if(tg) tg.HapticFeedback.impactOccurred('light');
+            setTimeout(() => elements.refreshIcon.classList.remove('rotate-180'), 500);
+            renderList(); 
+        }
+
+        function openSettingsModal() { elements.settingsModal.classList.remove('hidden'); }
+        function closeSettingsModal() { elements.settingsModal.classList.add('hidden'); }
+
+        function copyAddress(text, btn) {
+            navigator.clipboard.writeText(text);
+            const icon = btn.querySelector('.copy-icon');
+            icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
+            btn.classList.add('text-[#0ecb81]');
+            if(tg) tg.HapticFeedback.impactOccurred('medium');
+            setTimeout(() => {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>`;
+                btn.classList.remove('text-[#0ecb81]');
+            }, 2000);
+        }
+
+        function openChartModal(symbol) {
             currentSelectedSymbol = symbol;
-            document.getElementById('modalCoinTitle').innerText = symbol.replace('USDT', '/USDT');
-            document.getElementById('chartModal').classList.remove('hidden');
-            loadTradingViewChart(symbol, currentTimeframe);
+            elements.modalCoinTitle.innerText = symbol.replace('USDT', '/USDT');
+            elements.chartModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if(tg) tg.HapticFeedback.impactOccurred('light');
+            loadTradingViewChart();
         }
 
         function closeChartModal() {
-            document.getElementById('chartModal').classList.add('hidden');
+            elements.chartModal.classList.add('hidden');
+            document.body.style.overflow = '';
             document.getElementById('tradingview_container').innerHTML = '';
         }
 
         function changeTimeframe(tf) {
             currentTimeframe = tf;
-            if(tf === '60') {
-                document.getElementById('tf1h').className = "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors";
-                document.getElementById('tf3h').className = "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
-            } else {
-                document.getElementById('tf3h').className = "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors";
-                document.getElementById('tf1h').className = "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
-            }
-            loadTradingViewChart(currentSelectedSymbol, currentTimeframe);
+            document.getElementById('tf1h').className = tf === '60' ? "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors" : "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
+            document.getElementById('tf3h').className = tf === '180' ? "px-3 py-1 text-xs font-semibold rounded-md bg-[#fcd535] text-black transition-colors" : "px-3 py-1 text-xs font-semibold rounded-md text-[#848e9c] hover:text-white transition-colors";
+            loadTradingViewChart();
         }
 
-        function loadTradingViewChart(symbol, timeframe) {
+        function loadTradingViewChart() {
             document.getElementById('tradingview_container').innerHTML = '';
             new TradingView.widget({
                 "autosize": true,
-                "symbol": "BINANCE:" + symbol,
-                "interval": timeframe,
+                "symbol": "BINANCE:" + currentSelectedSymbol,
+                "interval": currentTimeframe,
                 "timezone": "Etc/UTC",
                 "theme": isLightMode ? "light" : "dark",
                 "style": "1",
                 "locale": "en",
-                "toolbar_bg": isLightMode ? "#ffffff" : "#181a20",
                 "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "hide_legend": false,
+                "backgroundColor": isLightMode ? "#f3f4f6" : "#0b0e11",
+                "gridColor": isLightMode ? "#e5e7eb" : "#1f2937",
+                "hide_top_toolbar": true,
+                "hide_legend": true,
                 "save_image": false,
                 "container_id": "tradingview_container"
             });
         }
 
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) searchInput.addEventListener('input', () => renderList(allCoins));
+        applyTheme();
+        fetchInitialData();
 
-        function manualRefresh() {
-            const icon = document.getElementById('refreshIcon');
-            if(icon) icon.classList.add('rotate-180');
-            fetchBinancePrices().then(() => {
-                setTimeout(() => { if(icon) icon.classList.remove('rotate-180'); }, 500);
-            });
-        }
-
-        function switchTab(tab) {
-            const tabs = ['prices', 'watchlist', 'donate'];
-
-            tabs.forEach(t => {
-                const section = document.getElementById(t + 'Tab');
-                const btn = document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1));
-                const text = document.getElementById('text' + t.charAt(0).toUpperCase() + t.slice(1));
-
-                if (t === tab) {
-                    section.classList.remove('hidden');
-                    btn.classList.replace('bg-transparent', 'bg-[#2b3139]');
-                    btn.classList.replace('text-[#848e9c]', 'text-white');
-                    text.classList.remove('max-w-0', 'opacity-0');
-                    text.classList.add('opacity-100');
-                    if (tab === 'watchlist') renderWatchlistTab();
-                } else {
-                    section.classList.add('hidden');
-                    btn.classList.replace('bg-[#2b3139]', 'bg-transparent');
-                    btn.classList.replace('text-white', 'text-[#848e9c]');
-                    text.classList.remove('opacity-100');
-                    text.classList.add('max-w-0', 'opacity-0');
-                }
-            });
-        }
-
-        function copyAddress(text, btnElement) {
-            navigator.clipboard.writeText(text).then(() => {
-                const icon = btnElement.querySelector('.copy-icon');
-                if(icon) {
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
-                    icon.classList.add('text-[#0ecb81]');
-                    btnElement.classList.add('bg-[#0ecb81]/10');
-                    setTimeout(() => {
-                        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>`;
-                        icon.classList.remove('text-[#0ecb81]');
-                        btnElement.classList.remove('bg-[#0ecb81]/10');
-                    }, 2000);
-                }
-            });
-        }
-
-        initApp();
-
-        setInterval(() => {
-            if (isAppReady) fetchBinancePrices();
-        }, 3000);
     </script>
 </body>
 </html>
