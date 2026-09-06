@@ -114,7 +114,7 @@
             <div class="flex space-x-5 px-4 mb-3 overflow-x-auto pb-1 scrollbar-hide text-sm font-medium border-b border-[#2b3139]">
                 <button onclick="setCategory('all')" id="cat-all" class="cat-btn text-[#fcd535] border-b-2 border-[#fcd535] pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="allMarkets">All Markets</button>
                 <button onclick="setCategory('trending')" id="cat-trending" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="trending">
-                    <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.56 10.59c-.49-.78-1.12-1.48-1.85-2.06-.51-.4-1.07-.75-1.68-1.04.14-.65.22-1.33.22-2.03 0-.37-.04-.73-.11-1.09C13.68 3.57 12.87 3 12 3c-.87 0-1.68.57-1.94 1.37-.07.36-.11.72-.11 1.09 0 .7.08 1.38.22 2.03-.61.29-1.17.64-1.68 1.04-.73.58-1.36 1.28-1.85 2.06C6.27 12.11 6 13.79 6 15.5 6 18.99 8.69 22 12 22s6-3.01 6-6.5c0-1.71-.27-3.39-.44-4.41z"/></svg> Trending
+                    <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.281.436-.506.914-.769 1.37-.253.436-.554.88-.93 1.258-.22.221-.468.423-.74.593-.321.202-.7.34-1.12.34-.694 0-1.285-.35-1.636-.87-.361-.536-.566-1.196-.708-1.782-.12-.5-.224-1-.415-1.464-.093-.227-.24-.44-.45-.584a1 1 0 00-1.442.238c-.368.513-.67 1.077-.872 1.67-.21.616-.328 1.282-.328 1.968 0 1.255.4 2.457 1.127 3.454.743 1.018 1.8 1.776 3.018 2.196 1.246.429 2.628.486 3.921.146a7.962 7.962 0 003.111-1.63c1.03-.834 1.83-1.933 2.278-3.18.459-1.283.562-2.705.215-4.062a10.09 10.09 0 00-.91-2.482c-.328-.666-.757-1.29-1.267-1.84z" clip-rule="evenodd"></path></svg> Trending
                 </button>
                 <button onclick="setCategory('gainers')" id="cat-gainers" class="cat-btn text-[#848e9c] border-b-2 border-transparent pb-2 whitespace-nowrap transition-colors flex items-center gap-1" data-i18n="gainers">
                     <svg class="w-4 h-4 text-[#0ecb81]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg> Gainers
@@ -350,7 +350,7 @@
 
         let userAlerts = JSON.parse(localStorage.getItem('binance_bot_alerts')) || [];
         let favoriteCoins = JSON.parse(localStorage.getItem('binance_favorites')) || ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT'];
-        let appTickets = JSON.parse(localStorage.getItem('bot_support_tickets')) || []; // Mock DB
+        let appTickets = JSON.parse(localStorage.getItem('bot_support_tickets')) || []; 
         let isLightMode = localStorage.getItem('app_theme') === 'light';
 
         const domPrices = {};
@@ -497,12 +497,16 @@
             };
 
             const isFav = favoriteCoins.includes(coin.symbol);
+            const coinLower = coin.name.toLowerCase();
+            const iconUrl = `https://assets.coincap.io/assets/icons/${coinLower}@2x.png`;
+            const fallbackIcon = `https://cryptologos.cc/logos/${coinLower}-${coinLower}-logo.png`;
             
             div.innerHTML = `
                 <div class="flex items-center space-x-3 w-1/2">
                     <button class="fav-btn p-1 ${isFav ? 'text-[#fcd535]' : 'text-[#848e9c] hover:text-white'}" onclick="toggleFavorite('${coin.symbol}', this)">
                         <svg class="w-4 h-4" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
                     </button>
+                    <img src="${iconUrl}" alt="${coin.name}" class="w-6 h-6 rounded-full shrink-0" onerror="this.onerror=null; this.src='${fallbackIcon}'; this.onerror=function(){this.src='https://cdn-icons-png.flaticon.com/512/825/825508.png'};">
                     <div>
                         <div class="font-bold text-white text-[15px] flex items-center gap-1">${coin.name} <span class="text-[10px] text-[#848e9c] bg-[#2b3139] px-1 rounded">USDT</span></div>
                         <div class="text-[11px] text-[#848e9c] mt-0.5 font-medium">Vol: ${(coin.volume / 1000000).toFixed(1)}M</div>
@@ -744,9 +748,6 @@
             localStorage.setItem('bot_support_tickets', JSON.stringify(appTickets));
             msgInput.value = '';
             
-            // در حالت پروداکشن، این بخش می‌تواند اطلاعات را به بات ارسال کند
-            // if(tg) tg.sendData(JSON.stringify({action: 'new_ticket', data: newTicket}));
-            
             renderUserTickets();
             showToast("Ticket Sent", "Our team will reply soon.");
         }
@@ -818,10 +819,6 @@
                 t.reply = text;
                 t.status = 'answered';
                 localStorage.setItem('bot_support_tickets', JSON.stringify(appTickets));
-                
-                // در حالت اتصال به بات، اینجا میتوانید دیتا را به بات بفرستید تا پاسخ را مستقیم ارسال کند (بدون فوروارد)
-                // fetch('/api/reply', { method: 'POST', body: JSON.stringify({userId: t.userId, msg: text}) });
-
                 renderAdminTickets();
                 showToast("Replied", "Message sent to user.");
             }
@@ -898,9 +895,11 @@
                 "enable_publishing": false,
                 "backgroundColor": isLightMode ? "#f3f4f6" : "#0b0e11",
                 "gridColor": isLightMode ? "#e5e7eb" : "#1f2937",
-                "hide_top_toolbar": true,
-                "hide_legend": true,
-                "save_image": false,
+                "hide_top_toolbar": false, // تولبار بالایی مجددا فعال شد
+                "hide_legend": false,      // لجند مجددا فعال شد
+                "save_image": true,
+                "allow_symbol_change": true, // قابلیت تغییر ارز مستقیما از چارت فعال شد
+                "details": true,             // جزئیات بیشتر چارت
                 "container_id": "tradingview_container"
             });
         }
