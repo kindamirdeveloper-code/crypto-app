@@ -1,7 +1,24 @@
 import sqlite3
 
+DB_NAME = 'bot_database.db'
+
+def init_db():
+    conn = sqlite3.connect(DB_NAME, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT,
+            first_name TEXT,
+            last_seen DATETIME,
+            session_count INTEGER DEFAULT 1
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
 def save_or_update_user(user_id, username, first_name):
-    conn = sqlite3.connect('bot_database.db')
+    conn = sqlite3.connect('bot_database.db', check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO users (user_id, username, first_name, last_seen, session_count)
