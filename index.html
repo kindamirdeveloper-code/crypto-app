@@ -654,7 +654,8 @@
     list.innerHTML = '<p class="text-xs text-[#848e9c] text-center">Loading users...</p>';
     
     try {
-        const response = await fetch('/api/get_users');
+        // نام کاربری پایتون‌ای‌ور خودتان را جایگزین yourusername کنید
+        const response = await fetch('https://amirkinddevelope..pythonanywhere.com/api/get_users');
         const data = await response.json();
         
         if (data.status === 'success' && data.users) {
